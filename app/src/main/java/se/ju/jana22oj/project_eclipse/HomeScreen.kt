@@ -1,7 +1,6 @@
 package se.ju.jana22oj.project_eclipse
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,7 +33,7 @@ fun HomeScreen(modifier: Modifier = Modifier){
 
 
     Box(modifier = Modifier.fillMaxSize()){
-        Image(painter = painterResource(id = R.drawable.my_back),
+        Image(painter = painterResource(id = R.drawable.my_battlefield),
             contentDescription = "BackgroundImage",
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize())
