@@ -46,7 +46,6 @@ fun HomeScreen(modifier: Modifier = Modifier){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text("Welcome to Call of Duty Battleships",
-            Modifier.background(Color.Black),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
