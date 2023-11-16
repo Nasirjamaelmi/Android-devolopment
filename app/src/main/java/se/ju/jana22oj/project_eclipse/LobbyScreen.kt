@@ -50,40 +50,10 @@ fun LobbyScreen( modifier: Modifier = Modifier){
 
 
 
-@Composable
-fun LobbyList(lobbies: List<lobby>) {
-    LazyColumn() {
-        items(lobbies) { lobby ->
-            LobbyItems(lobby)
-        }
-    }
-}
-
-@Composable
-fun LobbyItem(lobby:Lobby){
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        elevation = 4.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(lobby.name, style = MaterialTheme.typography.bodySmall)
-            Button(onClick = { /*TODO*/ }) {
-                Text("Join")
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true, heightDp = 320, widthDp = 320)
 @Composable
 fun DePreview(){
+
     LobbyScreen()
 }
