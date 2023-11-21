@@ -17,7 +17,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import se.ju.jana22oj.project_eclipse.ui.theme.ProjecteclipseTheme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import se.ju.jana22oj.project_eclipse.screens.GameScreen
+import se.ju.jana22oj.project_eclipse.screens.MainScreen
+import se.ju.jana22oj.project_eclipse.screens.Screen
 
 data class Cell(
     val row: Int,
@@ -29,14 +36,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
+
             ProjecteclipseTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen()
-                    //GameBoard()
+                    //HomeScreen()
+                   // GameBoard()
+                    NavHost(navController = navController, startDestination = Screen.Main.route) {
+                        composable(route = Screen.Main.route){
+                            HomeScreen(navController = navController)
+                        }
+                        composable(route = Screen.Game.route) {
+                            GameScreen(navController = navController)
+                        }
+                    }
                 }
             }
         }

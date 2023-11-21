@@ -25,10 +25,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import se.ju.jana22oj.project_eclipse.screens.Screen
 
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier){
+fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rememberNavController()){
     var homeTime by remember { mutableStateOf(true)}
 
 
@@ -54,7 +57,7 @@ fun HomeScreen(modifier: Modifier = Modifier){
                 .padding(vertical = 24.dp)
                 .height(50.dp)
                 .fillMaxWidth(fraction = 0.8f),
-                onClick = { homeTime = false },
+                onClick = {navController.navigate(Screen.Game.route) },
                 colors = ButtonDefaults.buttonColors(Color.Black)
 
 
