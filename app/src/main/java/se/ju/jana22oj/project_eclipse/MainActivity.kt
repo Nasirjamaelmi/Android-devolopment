@@ -50,6 +50,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = Screen.Main.route){
                             HomeScreen(navController = navController)
                         }
+                        composable(route = "lobby"){
+                            LobbyScreen(navController = navController)
+                        }
                         composable(route = Screen.Game.route) {
                             GameScreen(navController = navController)
                         }
