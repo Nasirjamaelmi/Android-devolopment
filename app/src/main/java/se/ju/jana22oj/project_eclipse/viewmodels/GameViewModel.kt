@@ -2,7 +2,9 @@ package se.ju.jana22oj.project_eclipse.viewmodels
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBox
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddCircle
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -42,12 +44,7 @@ class GameViewModel: ViewModel() {
     private val _symbols = setOf(
         Icons.Rounded.Warning,
         Icons.Rounded.AccountBox,
-        Icons.Rounded.Build,
-        Icons.Rounded.ArrowForward,
-        Icons.Rounded.AddCircle,
-        Icons.Rounded.CheckCircle,
-        Icons.Rounded.DateRange,
-        Icons.Rounded.Email
+
     )
     private val _cards = mutableStateListOf<Card>()
     val cards:SnapshotStateList<Card>
@@ -57,8 +54,12 @@ class GameViewModel: ViewModel() {
         _cards.clear()
         val tempCards = mutableListOf<Card>()
         for (symbol in _symbols){
-            tempCards.add(Card(symbol))
-            tempCards.add(Card(symbol))
+            for (i in 0..49) {
+                tempCards.add(Card(symbol))
+
+            }
+
+
         }
         tempCards.shuffle()
         _cards.addAll(tempCards)

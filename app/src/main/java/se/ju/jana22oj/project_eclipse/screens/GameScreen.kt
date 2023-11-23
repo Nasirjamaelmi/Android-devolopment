@@ -41,12 +41,12 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavCont
         Text(text = "GAME")
         Spacer(modifier = Modifier.height(16.dp))
         LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            columns = GridCells.Fixed(10),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         )
         {
-           items(cards){card ->
+           items(cards ){card ->
                CardView(card, onClick = {
                    gameViewModel.flipCard(card)
                })

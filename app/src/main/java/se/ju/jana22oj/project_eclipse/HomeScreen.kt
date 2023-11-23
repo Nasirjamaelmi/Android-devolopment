@@ -57,7 +57,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rem
                 .padding(vertical = 24.dp)
                 .height(50.dp)
                 .fillMaxWidth(fraction = 0.8f),
-                onClick = { navController.navigate(route = Screen.Lobby.route) },
+                onClick = { navController.navigate(route = Screen.Game.route) },
                 colors = ButtonDefaults.buttonColors(Color.Black)
 
 
