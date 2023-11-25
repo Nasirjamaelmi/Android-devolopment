@@ -24,13 +24,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import se.ju.jana22oj.project_eclipse.viewmodels.Card
+import se.ju.jana22oj.project_eclipse.viewmodels.Cell
 import se.ju.jana22oj.project_eclipse.viewmodels.GameViewModel
+
 
 @Composable
 fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavController = rememberNavController())
 {
-    val cards = gameViewModel.cards
+    val cells = gameViewModel.cells
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,7 +40,7 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavCont
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "GAME")
+        Text(text = "Your Board")
         Spacer(modifier = Modifier.height(16.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(10),
@@ -46,27 +48,31 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavCont
             horizontalArrangement = Arrangement.spacedBy(2.dp)
         )
         {
-           items(cards ){card ->
-               CardView(card, onClick = {
-                   gameViewModel.flipCard(card)
+           items(cells ){cell ->
+               CellView(cell, onClick = {
+
                })
            }
+            
         }
+        Text(text = "Make your ships ready",
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .height(20.dp)
+        )
     }
 }
 
 @Composable
-fun CardView(card: Card, onClick: () -> Unit) {
-    val isFlipped by card.isFlipped
+fun CellView(cell: Cell, onClick: () -> Unit) {
+
 
     Button(onClick = onClick,
         modifier = Modifier.aspectRatio(1f),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
         shape = RectangleShape
         ) {
-        if(isFlipped){
-            Icon(imageVector = card.symbol, contentDescription = "Card symbol")
-        }
 
     }
 }
+
