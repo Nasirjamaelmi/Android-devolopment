@@ -50,7 +50,7 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavCont
         {
            items(cells ){cell ->
                CellView(cell, onClick = {
-
+                    gameViewModel.selectCell(cell)
                })
            }
             
@@ -62,17 +62,16 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavCont
         )
     }
 }
-
 @Composable
 fun CellView(cell: Cell, onClick: () -> Unit) {
-
-
-    Button(onClick = onClick,
+    Button(
+        onClick = {
+            onClick()
+        },
         modifier = Modifier.aspectRatio(1f),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+        colors = ButtonDefaults.buttonColors(containerColor = cell.color.value),
         shape = RectangleShape
-        ) {
-
+    ) {
+        // Add content if needed
     }
 }
-
