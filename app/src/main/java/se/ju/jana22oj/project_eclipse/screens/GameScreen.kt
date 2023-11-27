@@ -1,6 +1,8 @@
 package se.ju.jana22oj.project_eclipse.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -12,18 +14,21 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import se.ju.jana22oj.project_eclipse.R
 import se.ju.jana22oj.project_eclipse.viewmodels.Cell
 import se.ju.jana22oj.project_eclipse.viewmodels.GameViewModel
 
@@ -32,6 +37,8 @@ import se.ju.jana22oj.project_eclipse.viewmodels.GameViewModel
 fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavController = rememberNavController())
 {
     val cells = gameViewModel.cells
+    val shipCreationMessage = gameViewModel.shipCreationMessage
+
 
     Column(
         modifier = Modifier
@@ -55,13 +62,24 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavCont
            }
             
         }
-        Text(text = "Make your ships ready",
+        Text(
+            text = buildAnnotatedString {
+                val delimiter = "<br>"
+                val parts = shipCreationMessage.value.split(delimiter)
+                for ((index, part) in parts.withIndex()) {
+                    append(part)
+                    if (index < parts.size - 1) {
+                        append("\n")
+                    }
+                }
+            },
             modifier = Modifier
                 .padding(top = 20.dp)
-                .height(20.dp)
         )
     }
+
 }
+
 @Composable
 fun CellView(cell: Cell, onClick: () -> Unit) {
     Button(
