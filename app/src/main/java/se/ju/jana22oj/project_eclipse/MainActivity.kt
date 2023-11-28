@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import se.ju.jana22oj.project_eclipse.screens.GameScreen
 import se.ju.jana22oj.project_eclipse.screens.MainScreen
 import se.ju.jana22oj.project_eclipse.screens.Screen
+import se.ju.jana22oj.project_eclipse.screens.SetupShipScreen
 
 data class Cell(
     val row: Int,
@@ -52,6 +53,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = Screen.Lobby.route){
                             LobbyScreen(navController = navController)
+                        }
+                        composable(route = Screen.Setup.route){
+                            SetupShipScreen()
                         }
                         composable(route = Screen.Game.route) {
                             GameScreen(navController = navController)

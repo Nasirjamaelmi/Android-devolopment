@@ -22,13 +22,13 @@ import java.util.Timer
 import kotlin.concurrent.schedule
 
     data class  Coordinate(val row: Int, val column: Int)
-    data class Cell(
+    data class sCell(
         val coordinate: Coordinate,
         val isClicked: MutableState<Boolean> = mutableStateOf(false),
         val color: MutableState<Color> = mutableStateOf(Color.Black)
 
     )
-    data class Ship(
+    data class sShip(
         val cells: List<Cell>,
         val isSunk: MutableState<Boolean> = mutableStateOf(false)
     )
@@ -37,13 +37,13 @@ import kotlin.concurrent.schedule
 
         private val _cells = mutableStateListOf<Cell>()
         private val _ships = mutableStateListOf<Ship>()
-        val shipCreationMessage = mutableStateOf("Place a ship with lenght 4 either vertical or horizontal")
+
 
         val cells:SnapshotStateList<Cell>
             get() = _cells
 
-
-
+        val ships:SnapshotStateList<Ship>
+            get() = _ships
 
         init {
             _cells.clear()
@@ -68,31 +68,19 @@ import kotlin.concurrent.schedule
         }
         private fun checkAndCreateShip() {
             val selectedCells = _cells.filter { it.isClicked.value }
-            val horizontalLine = selectedCells.all{it.coordinate.row ==  selectedCells[0].coordinate.row }
-            val verticalLine = selectedCells.all { it.coordinate.column ==  selectedCells[0].coordinate.column}
+            if (selectedCells.size == 4) {
+                val newShip = Ship(cells = selectedCells)
+                _ships.add(newShip)
 
-            if (selectedCells.size == 4 && (horizontalLine  || verticalLine)) {
-
-                    val newShip = Ship(cells = selectedCells)
-                    _ships.add(newShip)
-
-                     val blueColor = Color.Blue
-                     selectedCells.forEach{
-                        it.isClicked.value= false
-                        it.color.value = blueColor
-
-
-
-                }
-                    shipCreationMessage.value = "Ship created successfully"
-            }
-            else
-            {
-                shipCreationMessage.value = "Place a ship with length 4 either vertical  or horizontals"
+                // Change the color of selected cells to blue
+                val blueColor = Color.Blue
+                selectedCells.forEach {
+                    it.isClicked.value = false
+                    it.color.value = blueColor
+                } // Deselect cells
+                selectedCells.forEach { it.coordinate } // Change color or update some property
+                // Notify observers that a ship has been created
+                // You might want to use LiveData or other mechanisms to observe changes
             }
         }
     }
-
-
-
-

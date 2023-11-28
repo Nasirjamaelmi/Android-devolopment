@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -30,9 +32,10 @@ import androidx.navigation.compose.rememberNavController
 import se.ju.jana22oj.project_eclipse.screens.Screen
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rememberNavController()){
-    var homeTime by remember { mutableStateOf(true)}
+    var playerName by remember { mutableStateOf("") }
 
 
     Box(modifier = Modifier.fillMaxSize()){
@@ -52,12 +55,18 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rem
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
+        TextField(
+            value = playerName,
+            onValueChange = { playerName = it },
+            label = { Text("Enter your name") },
+            modifier = Modifier.padding(vertical = 24.dp)
+        )
         Button(
             modifier = Modifier
                 .padding(vertical = 24.dp)
                 .height(50.dp)
                 .fillMaxWidth(fraction = 0.8f),
-                onClick = { navController.navigate(route = Screen.Game.route) },
+                onClick = { navController.navigate(route = Screen.Setup.route) },
                 colors = ButtonDefaults.buttonColors(Color.Black)
 
 

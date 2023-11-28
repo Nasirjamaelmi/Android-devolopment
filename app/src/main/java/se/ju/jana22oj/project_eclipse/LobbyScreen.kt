@@ -80,7 +80,7 @@ fun PlayerItem(player: Player, lobbyViewModel: LobbyViewModel){
     ) {
         Text(text = player.name)
         Button(onClick = { lobbyViewModel.invitePlayer(player) }) {
-            Text("Text")
+            Text("Invite")
 
         }
     }
