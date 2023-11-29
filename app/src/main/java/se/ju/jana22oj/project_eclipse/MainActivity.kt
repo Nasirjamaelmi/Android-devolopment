@@ -22,7 +22,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
-import se.ju.jana22oj.project_eclipse.screens.GameScreen
 import se.ju.jana22oj.project_eclipse.screens.MainScreen
 import se.ju.jana22oj.project_eclipse.screens.Screen
 import se.ju.jana22oj.project_eclipse.screens.SetupShipScreen
@@ -58,7 +57,8 @@ class MainActivity : ComponentActivity() {
                             SetupShipScreen()
                         }
                         composable(route = Screen.Game.route) {
-                            GameScreen(navController = navController)
+                            //GameScreen(navController = navController)
+                            Text("GAME")
                         }
                     }
                 }

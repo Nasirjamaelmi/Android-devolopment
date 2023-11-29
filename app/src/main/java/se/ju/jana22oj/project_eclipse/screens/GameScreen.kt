@@ -25,9 +25,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import se.ju.jana22oj.project_eclipse.viewmodels.Cell
-import se.ju.jana22oj.project_eclipse.viewmodels.GameViewModel
 
-
+/*
 @Composable
 fun GameScreen(gameViewModel: GameViewModel = viewModel(),navController: NavController = rememberNavController())
 {
@@ -75,3 +74,4 @@ fun CellView(cell: Cell, onClick: () -> Unit) {
         // Add content if needed
     }
 }
+*/

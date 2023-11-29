@@ -49,8 +49,8 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
 
     Column(
             modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
+                .fillMaxSize()
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -94,8 +94,8 @@ fun DropdownMenuWithIcons(selectedShipType: MutableState<ShipType>) {
 
     Box {
         Row(modifier = Modifier
-                .clickable { expanded = true }
-                .padding(8.dp)) {
+            .clickable { expanded = true }
+            .padding(8.dp)) {
             ShipIcon(selectedShipType.value, Modifier.size(24.dp))
             Spacer(Modifier.width(8.dp))
             Text(text = selectedShipType.value.name)
@@ -105,16 +105,16 @@ fun DropdownMenuWithIcons(selectedShipType: MutableState<ShipType>) {
                 onDismissRequest = { expanded = false }
         ) {
             shipTypes.forEach { shipType ->
-                DropdownMenuItem(onClick = {
-                    selectedShipType.value = shipType
-                    expanded = false
-                }) {
+                DropdownMenuItem(text = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         ShipIcon(shipType, Modifier.size(24.dp))
                         Spacer(Modifier.width(8.dp))
                         Text(shipType.name)
                     }
-                }
+                }, onClick = {
+                    selectedShipType.value = shipType
+                    expanded = false
+                })
             }
         }
     }
@@ -131,8 +131,8 @@ fun CellView(coordinates: Coordinates, ships: List<Ship>, viewModel: SetupShipVi
                 if (shipInCell == null) viewModel.placeShip(shipType, coordinates, isRotated)
             },
             modifier = Modifier
-                    .aspectRatio(1f)
-                    .background(if (shipInCell != null) Color.Red else Color.Gray),
+                .aspectRatio(1f)
+                .background(if (shipInCell != null) Color.Red else Color.Gray),
             content = {
                 shipInCell?.let { ShipIcon(it.type) }
             }

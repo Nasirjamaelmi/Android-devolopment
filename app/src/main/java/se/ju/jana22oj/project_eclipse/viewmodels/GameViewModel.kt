@@ -1,3 +1,4 @@
+
 package se.ju.jana22oj.project_eclipse.viewmodels
 
 import androidx.compose.material.icons.Icons
@@ -20,7 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import java.util.Timer
 import kotlin.concurrent.schedule
-
+/*
     data class  Coordinate(val row: Int, val column: Int)
     data class sCell(
         val coordinate: Coordinate,
@@ -84,3 +85,4 @@ import kotlin.concurrent.schedule
             }
         }
     }
+*/
