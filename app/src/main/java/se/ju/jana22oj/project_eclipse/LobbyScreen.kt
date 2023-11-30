@@ -35,10 +35,10 @@ import io.garrit.android.multiplayer.SupabaseService
 @Composable
 fun LobbyScreen( modifier: Modifier = Modifier, navController: NavController, lobbyViewModel: LobbyViewModel = LobbyViewModel()){
 
-    LaunchedEffect(true) {
+  /*  LaunchedEffect(true) {
         lobbyViewModel.joinLobby(Player(name = "Hej"))
     }
-
+*/
     Scaffold (
         topBar = {
             TopAppBar(

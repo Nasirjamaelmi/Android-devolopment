@@ -29,12 +29,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import io.garrit.android.multiplayer.Player
 import se.ju.jana22oj.project_eclipse.screens.Screen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rememberNavController()){
+fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rememberNavController(), lobbyViewModel: LobbyViewModel = LobbyViewModel()){
     var playerName by remember { mutableStateOf("") }
 
 
@@ -66,10 +67,11 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rem
                 .padding(vertical = 24.dp)
                 .height(50.dp)
                 .fillMaxWidth(fraction = 0.8f),
-                onClick = { navController.navigate(route = Screen.Setup.route) },
+                onClick = {
+                    lobbyViewModel.joinLobby(Player(name = playerName))
+                    navController.navigate(route = Screen.Lobby.route)
+                          },
                 colors = ButtonDefaults.buttonColors(Color.Black)
-
-
             ) {
             Text("Start Game")
 
