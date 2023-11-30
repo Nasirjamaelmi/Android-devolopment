@@ -19,7 +19,7 @@ class LobbyViewModel : ViewModel() {
      val players = SupabaseService.users
      val server : MutableStateFlow<ServerState> = SupabaseService.serverState
 
-    val games = SupabaseService.games
+     val games = SupabaseService.games
     fun invitePlayer(opponent: Player) {
         viewModelScope.launch {
             SupabaseService.invite(opponent)

@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,9 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.Navigation
+import androidx.navigation.compose.rememberNavController
 import io.garrit.android.multiplayer.Game
 import io.garrit.android.multiplayer.Player
 import io.garrit.android.multiplayer.SupabaseService
+import se.ju.jana22oj.project_eclipse.screens.Screen
 import java.time.format.TextStyle
 
 
@@ -38,8 +42,10 @@ import java.time.format.TextStyle
 @Composable
 fun LobbyScreen( modifier: Modifier = Modifier, navController: NavController, lobbyViewModel: LobbyViewModel = LobbyViewModel()){
 
-
-
+     if(lobbyViewModel.server.collectAsState().value.toString() == "GAME")
+     {
+         navController.navigate(Screen.Setup.route)
+     }
     Scaffold (
         topBar = {
             TopAppBar(
@@ -68,8 +74,9 @@ fun LobbyScreen( modifier: Modifier = Modifier, navController: NavController, lo
                 PlayerItem(player = player, lobbyViewModel = lobbyViewModel)
             }
             items(lobbyViewModel.games) { game ->
-                GameItem(game = game, lobbyViewModel = lobbyViewModel)
+                GameItem(game = game, lobbyViewModel = lobbyViewModel ,navController = navController)
             }
+
         }
     }
 }
@@ -91,7 +98,8 @@ fun PlayerItem(player: Player, lobbyViewModel: LobbyViewModel){
 }
 
 @Composable
-fun GameItem(game: Game, lobbyViewModel: LobbyViewModel) {
+fun GameItem(game: Game, lobbyViewModel: LobbyViewModel,  navController: NavController)  {
+
     Row {
         Text("${game.player1.name} has invited you")
         Button(
@@ -124,8 +132,6 @@ fun GameItem(game: Game, lobbyViewModel: LobbyViewModel) {
         }
     }
 }
-
-
 
 
 /*
