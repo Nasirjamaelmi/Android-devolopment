@@ -1,7 +1,9 @@
 package se.ju.jana22oj.project_eclipse.viewmodels
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.garrit.android.multiplayer.SupabaseService
@@ -75,8 +77,8 @@ class Cell(val coordinates: Coordinates) {
 
 
 class SetupShipViewModel: ViewModel() {
-    private val _ships: MutableState<List<Ship>> = mutableStateOf(emptyList())
-    val ships: List<Ship> = _ships.value
+    private val _ships: SnapshotStateList<Ship> = mutableStateListOf<Ship>()
+    val ships: SnapshotStateList<Ship> = _ships
 
 
     val board = Board
@@ -96,13 +98,13 @@ class SetupShipViewModel: ViewModel() {
         board.placeShip(ship)
 
         // Add the ship to the _ships list
-        _ships.value = _ships.value + listOf(ship)
+        _ships.add(ship)
 
     }
 
     fun removeShip(ship: Ship) {
         // Remove the ship from the _ships list
-        _ships.value = _ships.value - listOf(ship)
+        _ships.remove(ship)
 
         // Remove the ship from the board (update board state)
         board.removeShip(ship)
