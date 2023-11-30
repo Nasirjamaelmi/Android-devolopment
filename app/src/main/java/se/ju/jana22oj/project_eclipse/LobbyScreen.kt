@@ -23,22 +23,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.garrit.android.multiplayer.Game
 import io.garrit.android.multiplayer.Player
 import io.garrit.android.multiplayer.SupabaseService
+import java.time.format.TextStyle
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LobbyScreen( modifier: Modifier = Modifier, navController: NavController, lobbyViewModel: LobbyViewModel = LobbyViewModel()){
 
-  /*  LaunchedEffect(true) {
-        lobbyViewModel.joinLobby(Player(name = "Hej"))
-    }
-*/
     Scaffold (
         topBar = {
             TopAppBar(
@@ -68,6 +67,13 @@ fun LobbyScreen( modifier: Modifier = Modifier, navController: NavController, lo
             }
         }
     }
+    LazyColumn{
+        items(lobbyViewModel.games)
+        { games ->
+            GameItems(player = games.player2, lobbyViewModel = lobbyViewModel, game = games)
+
+        }
+        }
 }
 
 @Composable
@@ -82,6 +88,40 @@ fun PlayerItem(player: Player, lobbyViewModel: LobbyViewModel){
         Button(onClick = { lobbyViewModel.invitePlayer(player) }) {
             Text("Invite")
 
+        }
+    }
+}
+
+@Composable
+fun GameItems(player: Player, lobbyViewModel: LobbyViewModel, game: Game) {
+    Row {
+        Button(
+            onClick = {
+                lobbyViewModel.acceptInvite(game)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
+        )
+        {
+
+            Text(
+                text = "Accept",
+                style = androidx.compose.ui.text.TextStyle(Color.Black),
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Button(
+            onClick = {
+                lobbyViewModel.declineInvite(game)
+
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+        )
+        {
+            Text(
+                text = "Decline",
+                style = androidx.compose.ui.text.TextStyle(Color.White),
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

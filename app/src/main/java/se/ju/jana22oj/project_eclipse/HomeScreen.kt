@@ -74,7 +74,6 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rem
                 colors = ButtonDefaults.buttonColors(Color.Black)
             ) {
             Text("Start Game")
-
         }
     }
 }
