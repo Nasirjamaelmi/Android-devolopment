@@ -25,9 +25,7 @@ class LobbyViewModel : ViewModel() {
             SupabaseService.invite(opponent)
         }
     }
-    fun myinv(){
 
-    }
 
     fun acceptInvite(game: Game) {
         viewModelScope.launch {

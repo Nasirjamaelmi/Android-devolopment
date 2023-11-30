@@ -38,6 +38,8 @@ import java.time.format.TextStyle
 @Composable
 fun LobbyScreen( modifier: Modifier = Modifier, navController: NavController, lobbyViewModel: LobbyViewModel = LobbyViewModel()){
 
+
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -65,15 +67,11 @@ fun LobbyScreen( modifier: Modifier = Modifier, navController: NavController, lo
             items(lobbyViewModel.players) { player ->
                 PlayerItem(player = player, lobbyViewModel = lobbyViewModel)
             }
+            items(lobbyViewModel.games) { game ->
+                GameItem(game = game, lobbyViewModel = lobbyViewModel)
+            }
         }
     }
-    LazyColumn{
-        items(lobbyViewModel.games)
-        { games ->
-            GameItems(player = games.player2, lobbyViewModel = lobbyViewModel, game = games)
-
-        }
-        }
 }
 
 @Composable
@@ -85,7 +83,7 @@ fun PlayerItem(player: Player, lobbyViewModel: LobbyViewModel){
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = player.name)
-        Button(onClick = { lobbyViewModel.invitePlayer(player) }) {
+        Button(onClick = { lobbyViewModel.invitePlayer(player)}) {
             Text("Invite")
 
         }
@@ -93,8 +91,9 @@ fun PlayerItem(player: Player, lobbyViewModel: LobbyViewModel){
 }
 
 @Composable
-fun GameItems(player: Player, lobbyViewModel: LobbyViewModel, game: Game) {
+fun GameItem(game: Game, lobbyViewModel: LobbyViewModel) {
     Row {
+        Text("${game.player1.name} has invited you")
         Button(
             onClick = {
                 lobbyViewModel.acceptInvite(game)
