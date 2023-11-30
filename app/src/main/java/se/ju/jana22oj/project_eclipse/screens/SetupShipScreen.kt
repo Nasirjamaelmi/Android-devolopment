@@ -21,7 +21,10 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,51 +48,71 @@ import se.ju.jana22oj.project_eclipse.viewmodels.ShipType
 @Composable
 fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
     val ships = setupShipViewModel.ships
-    val selectedShipType = remember { mutableStateOf(ShipType.DESTROYER) } // default selection
+    val availableShipTypes = setupShipViewModel.availabeshipTypes
+    //val selectedShipType = remember { mutableStateOf(ShipType.DESTROYER) } // default selection
+    val selectedShipType: State<ShipType> = remember(availableShipTypes) {
+        derivedStateOf {
+            availableShipTypes.firstOrNull() ?: ShipType.CARRIER
+        }
+    } // default selection
     val isRotated = remember { mutableStateOf(false) } // to handle ship rotation
 
+    LaunchedEffect(availableShipTypes) {
+        if (availableShipTypes.isEmpty()) {
+            setupShipViewModel.startGame()
+        }
+    }
+
     Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "SETUP YOUR SHIPS")
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Dropdown menu for ship selection
-        DropdownMenuWithIcons(selectedShipType)
+        if (availableShipTypes.isNotEmpty()) {
+            // Dropdown menu for ship selection
+            DropdownMenuWithIcons(selectedShipType, availableShipTypes)
 
-        // Button to toggle ship rotation
-        Button(onClick = { isRotated.value = !isRotated.value }) {
-            Text(text = if (isRotated.value) "Horizontal" else "Vertical")
+            // Button to toggle ship rotation
+            Button(onClick = { isRotated.value = !isRotated.value }) {
+                Text(text = if (isRotated.value) "Horizontal" else "Vertical")
+            }
+
         }
 
         // Grid for ship placement
         LazyVerticalGrid(
-                columns = GridCells.Fixed(Board.BoardSize),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            columns = GridCells.Fixed(Board.BoardSize),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(Board.BoardSize * Board.BoardSize) { index ->
                 val x = index % Board.BoardSize
                 val y = index / Board.BoardSize
-                CellView(Coordinates(x, y), ships, setupShipViewModel, selectedShipType.value, isRotated.value)
+                CellView(
+                    Coordinates(x, y),
+                    ships,
+                    setupShipViewModel,
+                    selectedShipType.value,
+                    isRotated.value
+                )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+       /* Spacer(modifier = Modifier.height(16.dp))
 
         // Ready button
         Button(onClick = { setupShipViewModel.startGame() }) {
-            Text("READY")
-        }
+            Text("READY")*/
     }
 }
 
 @Composable
-fun DropdownMenuWithIcons(selectedShipType: MutableState<ShipType>) {
+fun DropdownMenuWithIcons(selectedShipType: State<ShipType>, availableShipTypes: List<ShipType>) {
     var expanded by remember { mutableStateOf(false) }
     val shipTypes = ShipType.values()
 
@@ -101,10 +125,10 @@ fun DropdownMenuWithIcons(selectedShipType: MutableState<ShipType>) {
             Text(text = selectedShipType.value.name)
         }
         DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
         ) {
-            shipTypes.forEach { shipType ->
+            availableShipTypes.forEach { shipType ->
                 DropdownMenuItem(text = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         ShipIcon(shipType, Modifier.size(24.dp))
@@ -112,7 +136,7 @@ fun DropdownMenuWithIcons(selectedShipType: MutableState<ShipType>) {
                         Text(shipType.name)
                     }
                 }, onClick = {
-                    selectedShipType.value = shipType
+                    //selectedShipType.value = shipType
                     expanded = false
                 })
             }

@@ -76,9 +76,23 @@ class Cell(val coordinates: Coordinates) {
 }
 
 
+
+
+/*
+- Hava a list of the different ships
+- When place a ship, remove the type from the list
+- Frontend: Filter list for specific types
+ */
 class SetupShipViewModel: ViewModel() {
-    private val _ships: SnapshotStateList<Ship> = mutableStateListOf<Ship>()
+    val _ships: SnapshotStateList<Ship> = mutableStateListOf<Ship>()
     val ships: SnapshotStateList<Ship> = _ships
+    val availabeshipTypes = mutableStateListOf(
+        ShipType.CARRIER,
+        ShipType.BATTLESHIP,
+        ShipType.CRUISER, ShipType.CRUISER,
+        ShipType.DESTROYER, ShipType.DESTROYER
+    )
+
 
 
     val board = Board
@@ -90,17 +104,22 @@ class SetupShipViewModel: ViewModel() {
         if (!isValidPlacement(shipType, coordinates, isRotated)) {
             return
         }
-
         // Create a Ship object with the specified type and coordinates
         val ship = Ship(shipType, calculateShipCoordinates(shipType, coordinates, isRotated))
+
+
 
         // Place the ship on the board (update board state)
         board.placeShip(ship)
 
         // Add the ship to the _ships list
         _ships.add(ship)
+        availabeshipTypes.remove(shipType)
+
+
 
     }
+
 
     fun removeShip(ship: Ship) {
         // Remove the ship from the _ships list
