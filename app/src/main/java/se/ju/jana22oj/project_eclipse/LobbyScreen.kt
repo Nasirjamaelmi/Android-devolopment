@@ -134,12 +134,3 @@ fun GameItem(game: Game, lobbyViewModel: LobbyViewModel,  navController: NavCont
 }
 
 
-/*
-@Preview(showBackground = true, heightDp = 320, widthDp = 320)
-@Composable
-fun DePreview(){
-
-    LobbyScreen(navController = NavController(), lobbyViewModel = LobbyViewModel())
-}
-
- */

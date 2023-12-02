@@ -26,11 +26,6 @@ import se.ju.jana22oj.project_eclipse.screens.MainScreen
 import se.ju.jana22oj.project_eclipse.screens.Screen
 import se.ju.jana22oj.project_eclipse.screens.SetupShipScreen
 
-data class Cell(
-    val row: Int,
-    val col:Int,
-    var isShip: Boolean = false,
-    var isHit: Boolean = false )
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,35 +62,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun GameBoard(){
-    Row {
-        for(y in 0..9)
-            Column {
-                for(x in 0..9)
-                {
-                    Box()
-                }
-            }
-    }
-}
-@Composable
-fun Box(){
-    Text(text = "|_|")
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ProjecteclipseTheme {
-        Greeting("Android")
-    }
-}

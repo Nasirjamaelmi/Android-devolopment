@@ -12,9 +12,6 @@ import kotlinx.coroutines.launch
 
 class LobbyViewModel : ViewModel() {
 
-    //init {
-    //    joinLobby(Player(name = "Hej"))
-    //}
 
      val players = SupabaseService.users
      val server : MutableStateFlow<ServerState> = SupabaseService.serverState

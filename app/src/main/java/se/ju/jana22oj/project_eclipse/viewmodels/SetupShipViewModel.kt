@@ -1,8 +1,7 @@
 package se.ju.jana22oj.project_eclipse.viewmodels
 
-import androidx.compose.runtime.MutableState
+
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -196,4 +195,6 @@ class SetupShipViewModel: ViewModel() {
         return true
     }
 }
+
+
 
