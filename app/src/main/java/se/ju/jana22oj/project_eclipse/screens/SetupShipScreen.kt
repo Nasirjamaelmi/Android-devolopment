@@ -36,7 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,6 +66,13 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
         if (setupShipViewModel.isSetupComplete) {
         }
     }*/
+    Box(modifier = Modifier.fillMaxSize()){
+        Image(painter = painterResource(id = R.drawable.my_setup),
+            contentDescription = "BackgroundImage",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize())
+    }
+
 
     Column(
         modifier = Modifier
@@ -72,7 +81,9 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "SETUP YOUR SHIPS")
+        Text(text = "SETUP YOUR SHIPS",
+            fontWeight = FontWeight.Bold,
+            color = Color.White)
         Spacer(modifier = Modifier.height(16.dp))
 
         if (availableShipTypes.isNotEmpty()) {
@@ -105,7 +116,10 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
             }
         }
         if (setupShipViewModel.isSetupComplete) {
-            Text("Setup is completed")
+            Text("Setup is completed",
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
             // READY button

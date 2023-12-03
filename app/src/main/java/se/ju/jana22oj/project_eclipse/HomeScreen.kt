@@ -69,7 +69,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController = rem
                 .fillMaxWidth(fraction = 0.8f),
                 onClick = {
                     lobbyViewModel.joinLobby(Player(name = playerName))
-                    navController.navigate(route = Screen.Setup.route)
+                    navController.navigate(route = Screen.Lobby.route)
                           },
                 colors = ButtonDefaults.buttonColors(Color.Black)
             ) {

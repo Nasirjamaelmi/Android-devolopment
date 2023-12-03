@@ -84,11 +84,7 @@ class Cell(val coordinates: Coordinates) {
 
 
 
-/*
-- Hava a list of the different ships
-- When place a ship, remove the type from the list
-- Frontend: Filter list for specific types
- */
+
 class SetupShipViewModel: ViewModel() {
     val _ships: SnapshotStateList<Ship> = mutableStateListOf<Ship>()
     val ships: SnapshotStateList<Ship> = _ships
@@ -122,10 +118,7 @@ class SetupShipViewModel: ViewModel() {
         availabeshipTypes.remove(shipType)
         if (availabeshipTypes.isEmpty()) {
             isSetupComplete = true
-            // Optionally, trigger the game start logic here
         }
-
-
 
     }
 
@@ -225,6 +218,7 @@ class SetupShipViewModel: ViewModel() {
         !Board.isCellOccupied(it)
     }
 }
+
 
 
 

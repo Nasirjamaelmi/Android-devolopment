@@ -2,7 +2,10 @@
 
 package se.ju.jana22oj.project_eclipse
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,7 +27,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,43 +46,53 @@ import java.time.format.TextStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LobbyScreen( modifier: Modifier = Modifier, navController: NavController, lobbyViewModel: LobbyViewModel = LobbyViewModel()){
+fun LobbyScreen(modifier: Modifier = Modifier, navController: NavController, lobbyViewModel: LobbyViewModel = LobbyViewModel()) {
 
-     if(lobbyViewModel.server.collectAsState().value.toString() == "GAME")
-     {
-         navController.navigate(Screen.Setup.route)
-     }
-    Scaffold (
-        topBar = {
-            TopAppBar(
-                title = { Text("Lobby") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp()  }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+    if(lobbyViewModel.server.collectAsState().value.toString() == "GAME") {
+        navController.navigate(Screen.Setup.route)
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.my_lobby),
+            contentDescription = "Background Image",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
+        )
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Lobby") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = {
+                            // Action for the button
+                        }) {
+                            Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        }
                     }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        println("hej")
-                    }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
-                    }
+                )
+            }
+        ) { innerPadding ->
+            LazyColumn(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .background(Color.Transparent)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                items(lobbyViewModel.players) { player ->
+                    PlayerItem(player = player, lobbyViewModel = lobbyViewModel)
                 }
-            )
-        }
-    ) {innerPadding->
-        LazyColumn(modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ){
-            items(lobbyViewModel.players) { player ->
-                PlayerItem(player = player, lobbyViewModel = lobbyViewModel)
+                items(lobbyViewModel.games) { game ->
+                    GameItem(game = game, lobbyViewModel = lobbyViewModel, navController = navController)
+                }
             }
-            items(lobbyViewModel.games) { game ->
-                GameItem(game = game, lobbyViewModel = lobbyViewModel ,navController = navController)
-            }
-
         }
     }
 }
