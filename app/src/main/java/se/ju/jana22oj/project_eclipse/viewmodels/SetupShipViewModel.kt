@@ -1,7 +1,10 @@
 package se.ju.jana22oj.project_eclipse.viewmodels
 
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -95,6 +98,8 @@ class SetupShipViewModel: ViewModel() {
         ShipType.CRUISER, ShipType.CRUISER,
         ShipType.DESTROYER, ShipType.DESTROYER
     )
+    var isSetupComplete by mutableStateOf(false)
+        private set
 
 
 
@@ -110,14 +115,15 @@ class SetupShipViewModel: ViewModel() {
         // Create a Ship object with the specified type and coordinates
         val ship = Ship(shipType, calculateShipCoordinates(shipType, coordinates, isRotated))
 
-
-
         // Place the ship on the board (update board state)
         board.placeShip(ship)
-
         // Add the ship to the _ships list
         _ships.add(ship)
         availabeshipTypes.remove(shipType)
+        if (availabeshipTypes.isEmpty()) {
+            isSetupComplete = true
+            // Optionally, trigger the game start logic here
+        }
 
 
 

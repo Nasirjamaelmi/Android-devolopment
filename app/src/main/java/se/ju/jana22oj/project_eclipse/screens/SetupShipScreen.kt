@@ -60,11 +60,10 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
     } // default selection
     val isRotated = remember { mutableStateOf(false) } // to handle ship rotation
 
-    LaunchedEffect(availableShipTypes) {
-        if (availableShipTypes.isEmpty()) {
-            setupShipViewModel.startGame()
+    /*LaunchedEffect(setupShipViewModel.isSetupComplete) {
+        if (setupShipViewModel.isSetupComplete) {
         }
-    }
+    }*/
 
     Column(
         modifier = Modifier
@@ -105,12 +104,15 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
                 )
             }
         }
+        if (setupShipViewModel.isSetupComplete) {
+            Text("Setup is completed")
+            Spacer(modifier = Modifier.height(16.dp))
 
-       /* Spacer(modifier = Modifier.height(16.dp))
-
-        // Ready button
-        Button(onClick = { setupShipViewModel.startGame() }) {
-            Text("READY")*/
+            // READY button
+            Button(onClick = { setupShipViewModel.startGame() }) {
+                Text("READY")
+            }
+        }
     }
 }
 
@@ -155,7 +157,11 @@ fun CellView(coordinates: Coordinates, ships: List<Ship>, viewModel: SetupShipVi
     val shipInCell = ships.find { ship -> coordinates in ship.coordinates }
     Button(
         onClick = {
-            if (shipInCell == null) viewModel.placeShip(shipType, coordinates, isRotated)
+            if (!viewModel.isSetupComplete) {
+                if (shipInCell == null) {
+                    viewModel.placeShip(shipType, coordinates, isRotated)
+                }
+            }
         },
         modifier = Modifier
             .aspectRatio(1f) // Ensure the cell is square
