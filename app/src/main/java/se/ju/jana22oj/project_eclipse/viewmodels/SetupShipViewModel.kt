@@ -55,8 +55,12 @@ object Board {
         throw Exception("Invalid coordinate: $coordinate")
     }
 
-
+    fun isCellOccupied(coordinate: Coordinates): Boolean {
+        return _cells.any { cell -> cell.coordinates == coordinate && cell.isOccupied() }
+    }
 }
+
+
 
 class Cell(val coordinates: Coordinates) {
     private var _occupant: Ship? = null
@@ -186,8 +190,8 @@ class SetupShipViewModel: ViewModel() {
         }
 
         // Check if the ship can be placed without overlapping existing ships
-        for (existingShip in ships) {
-            if (shipCoordinates.any { existingShip.coordinates.contains(it) }) {
+        for (shipCoord in shipCoordinates) {
+            if (!canPlaceAtCoord(shipCoord)) {
                 return false
             }
         }
@@ -195,6 +199,27 @@ class SetupShipViewModel: ViewModel() {
         return true
     }
 }
+
+
+    fun canPlaceAtCoord(coord: Coordinates): Boolean {
+    // Check if the cell is occupied
+    if (Board.isCellOccupied(coord)) {
+        return false
+    }
+
+    // Check surrounding cells
+    val surroundingCoords = listOf(
+        Coordinates(coord.x - 1, coord.y), Coordinates(coord.x + 1, coord.y),
+        Coordinates(coord.x, coord.y - 1), Coordinates(coord.x, coord.y + 1),
+        Coordinates(coord.x - 1, coord.y - 1), Coordinates(coord.x + 1, coord.y + 1),
+        Coordinates(coord.x - 1, coord.y + 1), Coordinates(coord.x + 1, coord.y - 1)
+    )
+
+    return surroundingCoords.all {
+        !Board.isCellOccupied(it)
+    }
+}
+
 
 
 

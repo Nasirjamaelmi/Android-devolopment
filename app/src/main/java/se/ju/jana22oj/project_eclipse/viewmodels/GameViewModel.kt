@@ -1,5 +1,5 @@
 package se.ju.jana22oj.project_eclipse.viewmodels
-
+/*
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -115,3 +115,4 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseClient: 
         handleGameStateUpdates()
     }
 }
+*/

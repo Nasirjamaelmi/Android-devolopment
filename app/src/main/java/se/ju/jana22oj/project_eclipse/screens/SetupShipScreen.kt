@@ -2,10 +2,12 @@ package se.ju.jana22oj.project_eclipse.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -87,8 +90,8 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
         // Grid for ship placement
         LazyVerticalGrid(
             columns = GridCells.Fixed(Board.BoardSize),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items(Board.BoardSize * Board.BoardSize) { index ->
                 val x = index % Board.BoardSize
@@ -151,17 +154,30 @@ fun DropdownMenuWithIcons(selectedShipType: State<ShipType>, availableShipTypes:
 fun CellView(coordinates: Coordinates, ships: List<Ship>, viewModel: SetupShipViewModel, shipType: ShipType, isRotated: Boolean) {
     val shipInCell = ships.find { ship -> coordinates in ship.coordinates }
     Button(
-            onClick = {
-                if (shipInCell == null) viewModel.placeShip(shipType, coordinates, isRotated)
-            },
-            modifier = Modifier
-                .aspectRatio(1f)
-                .background(if (shipInCell != null) Color.Red else Color.Gray),
-            content = {
-                shipInCell?.let { ShipIcon(it.type) }
+        onClick = {
+            if (shipInCell == null) viewModel.placeShip(shipType, coordinates, isRotated)
+        },
+        modifier = Modifier
+            .aspectRatio(1f) // Ensure the cell is square
+            .border(1.dp, Color.Black) // Adds a border
+            .background(if (shipInCell != null) Color.Transparent else Color.Gray)
+            .padding(4.dp), // Add padding to ensure icons fit within the cell
+        colors = ButtonDefaults.buttonColors(containerColor = if (shipInCell != null) Color.Transparent else Color.Gray),
+        shape = RectangleShape,
+        contentPadding = PaddingValues(0.dp),
+        content = {
+            Box(contentAlignment = Alignment.Center) {
+                shipInCell?.let {
+                    ShipIcon(it.type, Modifier.fillMaxSize()) // Fill the cell with the icon
+                }
             }
+        }
     )
 }
+
+
+
+
 
 
 
