@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import se.ju.jana22oj.project_eclipse.viewmodels.Coordinates
 import se.ju.jana22oj.project_eclipse.viewmodels.GameplayViewModel
 import se.ju.jana22oj.project_eclipse.viewmodels.GameplayViewModelFactory
 import se.ju.jana22oj.project_eclipse.viewmodels.SetupShipViewModel
+import se.ju.jana22oj.project_eclipse.viewmodels.Ship
 
 
 @Composable
@@ -43,6 +45,7 @@ fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipV
     val gameplayViewModel: GameplayViewModel = viewModel(
         factory = GameplayViewModelFactory(setupShipViewModel, supabaseService)
     )
+
 
     // Use the gameplayViewModel to collect states
     val isMyTurn by gameplayViewModel._isMyTurn.collectAsState()
@@ -100,7 +103,7 @@ fun GameBoardView(
             val y = index / Board.BoardSize
             val cell = board.getCell(Coordinates(x, y))
 
-            GameCellView(cell, isMyTurn) {
+            GameCellView(cell, isMyTurn,) {
                 if (isMyTurn) {
                     gameplayViewModel.attack(x, y)
                 }
@@ -122,7 +125,7 @@ fun GameCellView(
     }
 
     Button(
-        onClick = onAttack,
+        onClick = {if (isMyTurn && cell.isAttackable()) onAttack()},
         modifier = Modifier
             .aspectRatio(1f)
             .border(1.dp, Color.Black)
@@ -134,4 +137,4 @@ fun GameCellView(
 
     }
 }
-
+fun Cell.isAttackable() = !isHit() && !isMiss()

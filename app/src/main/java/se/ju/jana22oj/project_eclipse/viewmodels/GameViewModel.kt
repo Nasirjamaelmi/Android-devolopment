@@ -33,14 +33,14 @@ class GameplayViewModelFactory(
 
 class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseService: SupabaseService) : ViewModel(),
     SupabaseCallback {
-    val _shipSetupViewModel = SetupShipViewModel()
+
     val playerBoard = Board() // For the player's board
     val opponentBoard = Board()
     val _isMyTurn = MutableStateFlow(false)
     val _opponentShipCoordinates = mutableStateListOf<Coordinates>()
     val _isGameOver = MutableStateFlow(false)
     val _gameResult = MutableStateFlow<GameResult?>(null)
-    val ships: SnapshotStateList<Ship> = _shipSetupViewModel.ships
+    val ships = setupShipViewModel.ships
     var lastAttackCoordinates: Coordinates? = null
     val isOpponentReady = MutableStateFlow(false)
     var currentPlayer by mutableStateOf<Player?>(SupabaseService.currentGame?.player1)
@@ -50,9 +50,6 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
 
     override suspend fun playerReadyHandler() {
         isOpponentReady.value = true
-        if (_shipSetupViewModel.isSetupComplete) {
-            _shipSetupViewModel.startGame() // Call startGame from SetupShipViewModel
-        }
     }
 
 
@@ -187,7 +184,12 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
 
 
     init {
-        _shipSetupViewModel.startGame()
+        setupShipViewModel.ships.forEach { ship ->
+            playerBoard.placeShip(ship)
+        }
         supabaseService.callbackHandler = this
+        if (setupShipViewModel.isSetupComplete) {
+            setupShipViewModel.startGame()
+        }
     }
 }
