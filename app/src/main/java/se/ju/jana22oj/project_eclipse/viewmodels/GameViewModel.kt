@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import io.garrit.android.multiplayer.ActionResult
 import io.garrit.android.multiplayer.GameResult
@@ -16,6 +17,19 @@ import io.garrit.android.multiplayer.SupabaseService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
+class GameplayViewModelFactory(
+    private val setupShipViewModel: SetupShipViewModel,
+    private val supabaseService: SupabaseService
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(GameplayViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return GameplayViewModel(setupShipViewModel, supabaseService) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
 
 class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseService: SupabaseService) : ViewModel(),
     SupabaseCallback {

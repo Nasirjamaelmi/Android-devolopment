@@ -32,6 +32,7 @@ import se.ju.jana22oj.project_eclipse.viewmodels.Board
 import se.ju.jana22oj.project_eclipse.viewmodels.Cell
 import se.ju.jana22oj.project_eclipse.viewmodels.Coordinates
 import se.ju.jana22oj.project_eclipse.viewmodels.GameplayViewModel
+import se.ju.jana22oj.project_eclipse.viewmodels.GameplayViewModelFactory
 
 
 @Composable
