@@ -10,10 +10,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.garrit.android.multiplayer.SupabaseService
 import kotlinx.coroutines.launch
-import se.ju.jana22oj.project_eclipse.viewmodels.Board.BoardSize
+import se.ju.jana22oj.project_eclipse.viewmodels.Board.Companion.BoardSize
 
 
-class Ship(val type: ShipType, val coordinates: List<Coordinates>)
+class Ship(val type: ShipType, val coordinates: List<Coordinates>){
+    private var _isSunk = false
+
+    fun isSunk(): Boolean {
+        return _isSunk
+    }
+
+    fun markSunk() {
+        _isSunk = true
+    }
+}
 data class Coordinates(val x: Int, val y: Int)
 enum class ShipType(val size: Int) {
     CARRIER(4),
@@ -22,8 +32,10 @@ enum class ShipType(val size: Int) {
     DESTROYER(1)
 }
 
-object Board {
-    const val BoardSize = 10
+class Board {
+    companion object {
+        const val BoardSize = 10
+    }
     private val _cells = mutableListOf<Cell>()
 
     init {
@@ -67,6 +79,8 @@ object Board {
 
 class Cell(val coordinates: Coordinates) {
     private var _occupant: Ship? = null
+    private var _isHit = false
+    private var _isMiss = false
 
     fun occupy(ship: Ship) {
         _occupant = ship
@@ -79,6 +93,26 @@ class Cell(val coordinates: Coordinates) {
     fun isOccupied(): Boolean {
         return _occupant != null
     }
+
+    // Call this method when a cell is hit by an attack
+    fun markHit() {
+        _isHit = true
+    }
+
+    // Call this method when an attack on a cell is a miss
+    fun markMiss() {
+        _isMiss = true
+    }
+
+    // Check if the cell has been hit
+    fun isHit(): Boolean {
+        return _isHit
+    }
+
+    // Check if there was a miss on the cell
+    fun isMiss(): Boolean {
+        return _isMiss
+    }
 }
 
 
@@ -88,6 +122,7 @@ class Cell(val coordinates: Coordinates) {
 class SetupShipViewModel: ViewModel() {
     val _ships: SnapshotStateList<Ship> = mutableStateListOf<Ship>()
     val ships: SnapshotStateList<Ship> = _ships
+    private val board = Board()
     val availabeshipTypes = mutableStateListOf(
         ShipType.CARRIER,
         ShipType.BATTLESHIP,
@@ -97,9 +132,6 @@ class SetupShipViewModel: ViewModel() {
     var isSetupComplete by mutableStateOf(false)
         private set
 
-
-
-    val board = Board
 
     fun placeShip(shipType: ShipType, coordinates: Coordinates, isRotated: Boolean) {
 
@@ -132,7 +164,11 @@ class SetupShipViewModel: ViewModel() {
 
     }
 
-    private fun calculateShipCoordinates(shipType: ShipType, startCoordinate: Coordinates, isRotated: Boolean): List<Coordinates> {
+    private fun calculateShipCoordinates(
+        shipType: ShipType,
+        startCoordinate: Coordinates,
+        isRotated: Boolean
+    ): List<Coordinates> {
         return if (isRotated) {
             // For horizontal placement
             (0 until shipType.size).map { xOffset ->
@@ -180,7 +216,11 @@ class SetupShipViewModel: ViewModel() {
         }
     }
 
-    fun isValidPlacement(shipType: ShipType, coordinates: Coordinates, isRotated: Boolean): Boolean {
+    fun isValidPlacement(
+        shipType: ShipType,
+        coordinates: Coordinates,
+        isRotated: Boolean
+    ): Boolean {
         val shipCoordinates = calculateShipCoordinates(shipType, coordinates, isRotated)
 
         // Check if all coordinates of the ship are within the board boundaries
@@ -197,26 +237,28 @@ class SetupShipViewModel: ViewModel() {
 
         return true
     }
-}
 
 
     fun canPlaceAtCoord(coord: Coordinates): Boolean {
-    // Check if the cell is occupied
-    if (Board.isCellOccupied(coord)) {
-        return false
+        // Check if the cell is occupied
+        if (board.isCellOccupied(coord)) {
+            return false
+        }
+
+        // Check surrounding cells
+        val surroundingCoords = listOf(
+            Coordinates(coord.x - 1, coord.y), Coordinates(coord.x + 1, coord.y),
+            Coordinates(coord.x, coord.y - 1), Coordinates(coord.x, coord.y + 1),
+            Coordinates(coord.x - 1, coord.y - 1), Coordinates(coord.x + 1, coord.y + 1),
+            Coordinates(coord.x - 1, coord.y + 1), Coordinates(coord.x + 1, coord.y - 1)
+        )
+
+        return surroundingCoords.all {
+            !board.isCellOccupied(it)
+        }
     }
 
-    // Check surrounding cells
-    val surroundingCoords = listOf(
-        Coordinates(coord.x - 1, coord.y), Coordinates(coord.x + 1, coord.y),
-        Coordinates(coord.x, coord.y - 1), Coordinates(coord.x, coord.y + 1),
-        Coordinates(coord.x - 1, coord.y - 1), Coordinates(coord.x + 1, coord.y + 1),
-        Coordinates(coord.x - 1, coord.y + 1), Coordinates(coord.x + 1, coord.y - 1)
-    )
 
-    return surroundingCoords.all {
-        !Board.isCellOccupied(it)
-    }
 }
 
 

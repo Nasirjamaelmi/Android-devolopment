@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import se.ju.jana22oj.project_eclipse.R
 import se.ju.jana22oj.project_eclipse.viewmodels.Board
 import se.ju.jana22oj.project_eclipse.viewmodels.Coordinates
@@ -51,7 +52,7 @@ import se.ju.jana22oj.project_eclipse.viewmodels.ShipType
 
 
 @Composable
-fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
+fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel(),navController: NavController) {
     val ships = setupShipViewModel.ships
     val availableShipTypes = setupShipViewModel.availabeshipTypes
     //val selectedShipType = remember { mutableStateOf(ShipType.DESTROYER) } // default selection
@@ -123,7 +124,8 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // READY button
-            Button(onClick = { setupShipViewModel.startGame() }) {
+            Button(onClick = { setupShipViewModel.startGame()
+                navController.navigate(route = Screen.Game.route)}) {
                 Text("READY")
             }
         }
@@ -217,9 +219,10 @@ fun ShipIcon(shipType: ShipType, modifier: Modifier = Modifier) {
     )
 }
 
-
+/*
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun DefaultPreview(){
     SetupShipScreen()
 }
+ */
