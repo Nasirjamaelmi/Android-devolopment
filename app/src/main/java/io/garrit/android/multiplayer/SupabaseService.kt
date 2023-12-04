@@ -104,6 +104,7 @@ interface SupabaseCallback {
 }
 
 object SupabaseService {
+
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val _type: GameType = GameType.BATTLESHIPS
     private const val _supabaseUrl = "https://yrqrbupsuyfsyqlrfruw.supabase.co"

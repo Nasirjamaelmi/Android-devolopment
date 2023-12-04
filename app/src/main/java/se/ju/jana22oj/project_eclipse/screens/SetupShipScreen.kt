@@ -51,6 +51,7 @@ import se.ju.jana22oj.project_eclipse.viewmodels.Ship
 import se.ju.jana22oj.project_eclipse.viewmodels.ShipType
 
 
+
 @Composable
 fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel(),navController: NavController) {
     val ships = setupShipViewModel.ships

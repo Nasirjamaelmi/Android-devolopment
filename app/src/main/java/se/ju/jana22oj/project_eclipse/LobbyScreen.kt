@@ -4,13 +4,21 @@ package se.ju.jana22oj.project_eclipse
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.navigation.NavController
 import androidx.compose.material.icons.Icons
@@ -111,42 +119,54 @@ fun PlayerItem(player: Player, lobbyViewModel: LobbyViewModel){
 
         }
     }
-}
-
-@Composable
-fun GameItem(game: Game, lobbyViewModel: LobbyViewModel,  navController: NavController)  {
-
-    Row {
+}@Composable
+fun GameItem(game: Game, lobbyViewModel: LobbyViewModel, navController: NavController) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.Gray, shape = RoundedCornerShape(8.dp))
+            .padding(16.dp)
+    ) {
         Text("${game.player1.name} has invited you")
-        Button(
-            onClick = {
-                lobbyViewModel.acceptInvite(game)
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
-        )
-        {
+        Spacer(modifier = Modifier.height(16.dp)) // Add space between text and buttons
 
-            Text(
-                text = "Accept",
-                style = androidx.compose.ui.text.TextStyle(Color.Black),
-                fontWeight = FontWeight.Bold
-            )
-        }
-        Button(
-            onClick = {
-                lobbyViewModel.declineInvite(game)
-
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-        )
-        {
-            Text(
-                text = "Decline",
-                style = androidx.compose.ui.text.TextStyle(Color.White),
-                fontWeight = FontWeight.Bold
-            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxWidth()
+                .align(Alignment.End),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = {
+                    lobbyViewModel.acceptInvite(game)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
+            ) {
+                Text(
+                    text = "Accept",
+                    style = androidx.compose.ui.text.TextStyle(color = Color.Black),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp)) // Add space between buttons
+            Button(
+                onClick = {
+                    lobbyViewModel.declineInvite(game)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Text(
+                    text = "Decline",
+                    style = androidx.compose.ui.text.TextStyle(color = Color.White),
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
-
-

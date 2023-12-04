@@ -48,41 +48,41 @@ fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipV
     val isMyTurn by gameplayViewModel._isMyTurn.collectAsState()
     val isGameOver by gameplayViewModel._isGameOver.collectAsState()
     val gameResult by gameplayViewModel._gameResult.collectAsState()
-
-
-
     val boardToDisplay = if (isMyTurn) gameplayViewModel.playerBoard else gameplayViewModel.opponentBoard
 
     if (isGameOver) {
         GameResultScreen(gameResult, navController)
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        return
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Text(
+            text = if (isMyTurn) "YOUR TURN" else "OPPONENT'S TURN",
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            fontSize = 18.sp
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        // Displaying the game board
+        GameBoardView(boardToDisplay, isMyTurn, gameplayViewModel)
+        Spacer(modifier = Modifier.weight(1f)) // Pushes the button to the bottom
+        Button(
+            onClick = { gameplayViewModel.playerSurrender() },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Color.Red)
         ) {
-            Text(
-                text = if (isMyTurn) "YOUR TURN" else "OPPONENT'S TURN",
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                fontSize = 18.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            // Displaying the game board
-            GameBoardView(boardToDisplay, isMyTurn, gameplayViewModel)
-            Spacer(modifier = Modifier.weight(1f)) // Pushes the button to the bottom
-            Button(
-                onClick = { gameplayViewModel.playerSurrender() },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color.Red)
-            ) {
-                Text("SURRENDER", color = Color.White)
-            }
+            Text("SURRENDER", color = Color.White)
         }
     }
 }
+
 
 @Composable
 fun GameBoardView(

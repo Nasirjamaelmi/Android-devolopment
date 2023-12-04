@@ -33,7 +33,7 @@ class GameplayViewModelFactory(
 
 class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseService: SupabaseService) : ViewModel(),
     SupabaseCallback {
-    val _shipSetupViewModel = SetupShipViewModel()
+    val _shipSetupViewModel = setupShipViewModel
     val playerBoard = Board() // For the player's board
     val opponentBoard = Board()
     val _isMyTurn = MutableStateFlow(false)
@@ -90,12 +90,6 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
         _isGameOver.value = true
         _gameResult.value = status
     }
-
-
-
-
-
-
 
 
     fun handleOpponentAttack(x: Int, y: Int) {

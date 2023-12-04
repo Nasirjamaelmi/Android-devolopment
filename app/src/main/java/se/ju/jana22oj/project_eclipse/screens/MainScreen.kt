@@ -10,10 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import io.garrit.android.multiplayer.Game
+import org.w3c.dom.Text
 
 @Composable
 fun MainScreen(navController: NavController = rememberNavController())
@@ -29,11 +31,10 @@ fun MainScreen(navController: NavController = rememberNavController())
         Button(onClick = {
             navController.navigate(Screen.Game.route)
         }) {
+
             Text(text = "Start Game")
-            
+
         }
-
-
 
     }
 }
