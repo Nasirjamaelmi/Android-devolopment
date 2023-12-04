@@ -40,59 +40,45 @@ import se.ju.jana22oj.project_eclipse.viewmodels.Ship
 
 
 @Composable
-fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipViewModel,
-                   supabaseService: SupabaseService) {
+fun GameplayScreen(navController: NavController, setupShipViewModel: SetupShipViewModel, supabaseService: SupabaseService) {
     val gameplayViewModel: GameplayViewModel = viewModel(
         factory = GameplayViewModelFactory(setupShipViewModel, supabaseService)
     )
 
-
-    // Use the gameplayViewModel to collect states
     val isMyTurn by gameplayViewModel._isMyTurn.collectAsState()
     val isGameOver by gameplayViewModel._isGameOver.collectAsState()
     val gameResult by gameplayViewModel._gameResult.collectAsState()
-
-
 
     val boardToDisplay = if (isMyTurn) gameplayViewModel.playerBoard else gameplayViewModel.opponentBoard
 
     if (isGameOver) {
         GameResultScreen(gameResult, navController)
     } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = if (isMyTurn) "YOUR TURN" else "OPPONENT'S TURN",
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                fontSize = 18.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            // Displaying the game board
-            GameBoardView(boardToDisplay, isMyTurn, gameplayViewModel)
-            Spacer(modifier = Modifier.weight(1f)) // Pushes the button to the bottom
-            Button(
-                onClick = { gameplayViewModel.playerSurrender() },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color.Red)
-            ) {
-                Text("SURRENDER", color = Color.White)
-            }
-        }
+        GameplayUI(boardToDisplay, isMyTurn, gameplayViewModel)
     }
 }
 
 @Composable
-fun GameBoardView(
-    board: Board,
-    isMyTurn: Boolean,
-    gameplayViewModel: GameplayViewModel
-) {
+fun GameplayUI(board: Board, isMyTurn: Boolean, gameplayViewModel: GameplayViewModel) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = if (isMyTurn) "YOUR TURN" else "OPPONENT'S TURN",
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            fontSize = 18.sp
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        GameBoardView(board, isMyTurn, gameplayViewModel)
+        SurrenderButton(gameplayViewModel)
+    }
+}
+
+@Composable
+fun GameBoardView(board: Board, isMyTurn: Boolean, gameplayViewModel: GameplayViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(Board.BoardSize),
         verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -102,8 +88,7 @@ fun GameBoardView(
             val x = index % Board.BoardSize
             val y = index / Board.BoardSize
             val cell = board.getCell(Coordinates(x, y))
-
-            GameCellView(cell, isMyTurn,) {
+            GameCellView(cell, isMyTurn) {
                 if (isMyTurn) {
                     gameplayViewModel.attack(x, y)
                 }
@@ -113,11 +98,7 @@ fun GameBoardView(
 }
 
 @Composable
-fun GameCellView(
-    cell: Cell,
-    isMyTurn: Boolean,
-    onAttack: () -> Unit
-) {
+fun GameCellView(cell: Cell, isMyTurn: Boolean, onAttack: () -> Unit) {
     val backgroundColor = when {
         cell.isHit() -> Color.Red
         cell.isMiss() -> Color.Blue
@@ -125,16 +106,24 @@ fun GameCellView(
     }
 
     Button(
-        onClick = {if (isMyTurn && cell.isAttackable()) onAttack()},
-        modifier = Modifier
-            .aspectRatio(1f)
-            .border(1.dp, Color.Black)
-            .background(backgroundColor)
-            .padding(4.dp),
-        enabled = isMyTurn && !cell.isHit() && !cell.isMiss(),
+        onClick = { if (isMyTurn && cell.isAttackable()) onAttack() },
+        modifier = Modifier.aspectRatio(1f).border(1.dp, Color.Black).background(backgroundColor).padding(4.dp),
+        enabled = isMyTurn && cell.isAttackable(),
         contentPadding = PaddingValues(0.dp)
     ) {
-
+        // Content for the cell can be added here
     }
 }
+
+@Composable
+fun SurrenderButton(gameplayViewModel: GameplayViewModel) {
+    Button(
+        onClick = { gameplayViewModel.playerSurrender() },
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(Color.Red)
+    ) {
+        Text("SURRENDER", color = Color.White)
+    }
+}
+
 fun Cell.isAttackable() = !isHit() && !isMiss()
