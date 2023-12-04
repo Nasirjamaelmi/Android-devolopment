@@ -38,13 +38,18 @@ import se.ju.jana22oj.project_eclipse.viewmodels.SetupShipViewModel
 
 
 @Composable
-fun GameplayScreen(gameplayViewModel: GameplayViewModel = viewModel(), navController: NavController, setupShipViewModel: SetupShipViewModel,
+fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipViewModel,
                    supabaseService: SupabaseService) {
+    val gameplayViewModel: GameplayViewModel = viewModel(
+        factory = GameplayViewModelFactory(setupShipViewModel, supabaseService)
+    )
+
+    // Use the gameplayViewModel to collect states
     val isMyTurn by gameplayViewModel._isMyTurn.collectAsState()
     val isGameOver by gameplayViewModel._isGameOver.collectAsState()
     val gameResult by gameplayViewModel._gameResult.collectAsState()
-    val factory = GameplayViewModelFactory(setupShipViewModel, supabaseService)
-    val gameplayViewModel: GameplayViewModel = viewModel(factory = factory)
+
+
 
     val boardToDisplay = if (isMyTurn) gameplayViewModel.playerBoard else gameplayViewModel.opponentBoard
 
