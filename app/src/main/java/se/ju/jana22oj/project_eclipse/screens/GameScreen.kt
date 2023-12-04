@@ -28,18 +28,23 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import io.garrit.android.multiplayer.SupabaseService
 import se.ju.jana22oj.project_eclipse.viewmodels.Board
 import se.ju.jana22oj.project_eclipse.viewmodels.Cell
 import se.ju.jana22oj.project_eclipse.viewmodels.Coordinates
 import se.ju.jana22oj.project_eclipse.viewmodels.GameplayViewModel
 import se.ju.jana22oj.project_eclipse.viewmodels.GameplayViewModelFactory
+import se.ju.jana22oj.project_eclipse.viewmodels.SetupShipViewModel
 
 
 @Composable
-fun GameplayScreen(gameplayViewModel: GameplayViewModel = viewModel(), navController: NavController) {
+fun GameplayScreen(gameplayViewModel: GameplayViewModel = viewModel(), navController: NavController, setupShipViewModel: SetupShipViewModel,
+                   supabaseService: SupabaseService) {
     val isMyTurn by gameplayViewModel._isMyTurn.collectAsState()
     val isGameOver by gameplayViewModel._isGameOver.collectAsState()
     val gameResult by gameplayViewModel._gameResult.collectAsState()
+    val factory = GameplayViewModelFactory(setupShipViewModel, supabaseService)
+    val gameplayViewModel: GameplayViewModel = viewModel(factory = factory)
 
     val boardToDisplay = if (isMyTurn) gameplayViewModel.playerBoard else gameplayViewModel.opponentBoard
 
