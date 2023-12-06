@@ -98,7 +98,6 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel(),navCont
             }
 
         }
-
         // Grid for ship placement
         LazyVerticalGrid(
             columns = GridCells.Fixed(Board.BoardSize),

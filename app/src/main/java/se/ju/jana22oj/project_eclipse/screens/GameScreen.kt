@@ -19,7 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,7 +56,13 @@ fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipV
 
 
 
-    val boardToDisplay = if (isMyTurn) gameplayViewModel.playerBoard else gameplayViewModel.opponentBoard
+    //val boardToDisplay =
+    //derivedStateOf(isMyTurn)
+    val boardToDisplay by remember {
+        derivedStateOf {
+            if (isMyTurn) gameplayViewModel.playerBoard else gameplayViewModel.opponentBoard
+        }
+    }
 
     if (isGameOver) {
         GameResultScreen(gameResult, navController)
@@ -105,7 +113,8 @@ fun GameBoardView(
 
             GameCellView(cell, isMyTurn,) {
                 if (isMyTurn) {
-                    gameplayViewModel.attack(x, y)
+                    gameplayViewModel.attack(x,
+                        y)
                 }
             }
         }

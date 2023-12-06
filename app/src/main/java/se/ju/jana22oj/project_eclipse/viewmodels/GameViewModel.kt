@@ -46,8 +46,6 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
     var currentPlayer by mutableStateOf<Player?>(SupabaseService.currentGame?.player1)
 
 
-
-
     override suspend fun playerReadyHandler() {
         isOpponentReady.value = true
         if (_shipSetupViewModel.isSetupComplete) {
@@ -183,5 +181,10 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
     init {
         _shipSetupViewModel.startGame()
         supabaseService.callbackHandler = this
+        if(currentPlayer == supabaseService.currentGame?.player1)
+        {
+            _isMyTurn.value = true
+        }
+
     }
 }
