@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -60,7 +61,7 @@ fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipV
     //derivedStateOf(isMyTurn)
     val boardToDisplay by remember {
         derivedStateOf {
-            if (isMyTurn) gameplayViewModel.playerBoard else gameplayViewModel.opponentBoard
+            if (isMyTurn) gameplayViewModel.opponentBoard else gameplayViewModel.playerBoard
         }
     }
 
@@ -106,10 +107,20 @@ fun GameBoardView(
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        items(Board.BoardSize * Board.BoardSize) { index ->
+        /*items(Board.BoardSize * Board.BoardSize) { index ->
             val x = index % Board.BoardSize
             val y = index / Board.BoardSize
             val cell = board.getCell(Coordinates(x, y))
+
+            GameCellView(cell, isMyTurn,) {
+                if (isMyTurn) {
+                    gameplayViewModel.attack(x, y)
+                }
+            }
+        }*/
+        items(board.cells) { cell ->
+            val x = cell.coordinates.x
+            val y = cell.coordinates.y
 
             GameCellView(cell, isMyTurn,) {
                 if (isMyTurn) {

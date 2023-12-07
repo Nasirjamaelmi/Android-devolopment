@@ -14,7 +14,7 @@ import se.ju.jana22oj.project_eclipse.viewmodels.Board.Companion.BoardSize
 
 
 class Ship(val type: ShipType, val coordinates: List<Coordinates>){
-    private var _isSunk = false
+    var _isSunk = false
 
     fun isSunk(): Boolean {
         return _isSunk
@@ -36,7 +36,9 @@ class Board {
     companion object {
         const val BoardSize = 10
     }
-    private val _cells = mutableListOf<Cell>()
+    private val _cells = mutableStateListOf<Cell>()
+    val cells: SnapshotStateList<Cell>
+        get() = _cells
 
     init {
         _cells.clear()
