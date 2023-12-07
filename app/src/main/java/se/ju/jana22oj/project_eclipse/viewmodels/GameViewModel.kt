@@ -154,12 +154,10 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     }
 
     private fun checkWinCondition() {
-        if (_shipSetupViewModel.isSetupComplete) {
-            if (allOpponentShipsSunk()) {
-                gameFinish(GameResult.WIN)
-            } else if (allPlayerShipsSunk()) {
-                gameFinish(GameResult.LOSE)
-            }
+        if (!_shipSetupViewModel.isSetupComplete) return
+        when {
+            allOpponentShipsSunk() -> gameFinish(GameResult.WIN)
+            allPlayerShipsSunk() -> gameFinish(GameResult.LOSE)
         }
     }
 
