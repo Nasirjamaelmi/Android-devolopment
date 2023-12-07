@@ -81,15 +81,6 @@ class Cell(val coordinates: Coordinates) {
     private var _occupant: Ship? = null
     private var _isHit = false
     private var _isMiss = false
-    private var _isSunk = false
-
-    fun isSunk(): Boolean {
-        return _isSunk
-    }
-
-    fun markSunk() {
-        _isSunk = true
-    }
 
     fun occupy(ship: Ship) {
         _occupant = ship
