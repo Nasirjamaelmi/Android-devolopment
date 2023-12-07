@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                             LobbyScreen(navController = navController)
                         }
                         composable(route = Screen.Setup.route){
-                            SetupShipScreen(navController = navController)
+                            SetupShipScreen(setupShipViewModel = setupShipViewModel,navController = navController)
                         }
                         composable(route = Screen.Game.route) {
                             GameplayScreen(

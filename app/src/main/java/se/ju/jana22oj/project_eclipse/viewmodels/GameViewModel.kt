@@ -31,10 +31,10 @@ class GameplayViewModelFactory(
     }
 }
 
-class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseService: SupabaseService) : ViewModel(),
+class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService: SupabaseService) : ViewModel(),
     SupabaseCallback {
     val _shipSetupViewModel = setupShipViewModel
-    val playerBoard = Board() // For the player's board
+    var playerBoard = Board() // For the player's board
     val opponentBoard = Board()
     val _isMyTurn = MutableStateFlow(false)
     val _opponentShipCoordinates = mutableStateListOf<Coordinates>()
@@ -46,10 +46,20 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
     var currentPlayer by mutableStateOf<Player?>(SupabaseService.currentGame?.player1)
 
 
+    init {
+        playerBoard = _shipSetupViewModel.board
+        //_shipSetupViewModel.startGame()
+        supabaseService.callbackHandler = this
+        if(currentPlayer == supabaseService.currentGame?.player1)
+        {
+            _isMyTurn.value = true
+        }
+
+    }
     override suspend fun playerReadyHandler() {
         isOpponentReady.value = true
         if (_shipSetupViewModel.isSetupComplete) {
-            _shipSetupViewModel.startGame() // Call startGame from SetupShipViewModel
+            //_shipSetupViewModel.startGame() // Call startGame from SetupShipViewModel
         }
     }
 
@@ -96,6 +106,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
             val cell = playerBoard.getCell(coordinate)
 
             viewModelScope.launch {
+                println(cell.isOccupied())
                 if (cell.isOccupied()) {
                     cell.markHit()
                     val isSunk = updateShipStatus(coordinate)
@@ -112,7 +123,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
         }
     }
 
-     suspend fun updateShipStatus(hitCoordinate: Coordinates): Boolean {
+    fun updateShipStatus(hitCoordinate: Coordinates): Boolean {
         // Logic to update ship status and check if a ship is sunk
         ships.find { ship -> hitCoordinate in ship.coordinates }?.let { hitShip ->
             val isSunk = hitShip.coordinates.all { playerBoard.getCell(it).isHit() }
@@ -175,16 +186,4 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
         gameFinish(GameResult.SURRENDER)
     }
 
-
-
-
-    init {
-        _shipSetupViewModel.startGame()
-        supabaseService.callbackHandler = this
-        if(currentPlayer == supabaseService.currentGame?.player1)
-        {
-            _isMyTurn.value = true
-        }
-
-    }
 }

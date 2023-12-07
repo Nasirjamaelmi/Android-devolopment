@@ -97,6 +97,7 @@ class Cell(val coordinates: Coordinates) {
     // Call this method when a cell is hit by an attack
     fun markHit() {
         _isHit = true
+
     }
 
     // Call this method when an attack on a cell is a miss
@@ -122,7 +123,7 @@ class Cell(val coordinates: Coordinates) {
 class SetupShipViewModel: ViewModel() {
     val _ships: SnapshotStateList<Ship> = mutableStateListOf<Ship>()
     val ships: SnapshotStateList<Ship> = _ships
-    private val board = Board()
+    val board = Board()
     val availabeshipTypes = mutableStateListOf(
         ShipType.CARRIER,
         ShipType.BATTLESHIP,
