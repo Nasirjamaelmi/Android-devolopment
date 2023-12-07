@@ -13,7 +13,17 @@ import kotlinx.coroutines.launch
 import se.ju.jana22oj.project_eclipse.viewmodels.Board.Companion.BoardSize
 
 
-class Ship(val type: ShipType, val coordinates: List<Coordinates>)
+class Ship(val type: ShipType, val coordinates: List<Coordinates>){
+    private var _isSunk = false
+
+    fun isSunk(): Boolean {
+        return _isSunk
+    }
+
+    fun markSunk() {
+        _isSunk = true
+    }
+}
 data class Coordinates(val x: Int, val y: Int)
 enum class ShipType(val size: Int) {
     CARRIER(4),
@@ -63,10 +73,6 @@ class Board {
     fun isCellOccupied(coordinate: Coordinates): Boolean {
         return _cells.any { cell -> cell.coordinates == coordinate && cell.isOccupied() }
     }
-
-    fun getAllCells(): List<Cell> {
-        return _cells
-    }
 }
 
 
@@ -98,24 +104,15 @@ class Cell(val coordinates: Coordinates) {
     }
 
     // Call this method when a cell is hit by an attack
-    fun markHit(board: Board) {
+    fun markHit() {
         _isHit = true
-        checkAndMarkSunk(board)
 
-    }
-
-    fun checkAndMarkSunk(board: Board) {
-        _occupant?.let { ship ->
-            _isSunk = ship.coordinates.all { coord -> board.getCell(coord).isHit() }
-        }
     }
 
     // Call this method when an attack on a cell is a miss
     fun markMiss() {
         _isMiss = true
-
     }
-
 
     // Check if the cell has been hit
     fun isHit(): Boolean {
@@ -126,8 +123,6 @@ class Cell(val coordinates: Coordinates) {
     fun isMiss(): Boolean {
         return _isMiss
     }
-
-
 }
 
 
