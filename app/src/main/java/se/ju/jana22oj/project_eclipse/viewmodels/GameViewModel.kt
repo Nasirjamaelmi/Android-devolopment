@@ -112,7 +112,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, val supabaseServ
         }
     }
 
-     suspend fun updateShipStatus(hitCoordinate: Coordinates): Boolean {
+     fun updateShipStatus(hitCoordinate: Coordinates): Boolean {
         // Logic to update ship status and check if a ship is sunk
         ships.find { ship -> hitCoordinate in ship.coordinates }?.let { hitShip ->
             val isSunk = hitShip.coordinates.all { playerBoard.getCell(it).isHit() }

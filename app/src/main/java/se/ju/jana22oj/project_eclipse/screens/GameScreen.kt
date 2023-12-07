@@ -77,7 +77,7 @@ fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipV
             Text(
                 text = if (isMyTurn) "YOUR TURN" else "OPPONENT'S TURN",
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = Color.Black,
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -113,8 +113,7 @@ fun GameBoardView(
 
             GameCellView(cell, isMyTurn,) {
                 if (isMyTurn) {
-                    gameplayViewModel.attack(x,
-                        y)
+                    gameplayViewModel.attack(x, y)
                 }
             }
         }
