@@ -69,8 +69,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     }
 
     private fun determineInitialTurn() {
-        // Logic to determine who starts the game
-    // ayer1)
+       _isMyTurn.value = (currentPlayer == SupabaseService.currentGame?.player1)
     }
 
     override suspend fun releaseTurnHandler() {
@@ -98,10 +97,18 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
 
 
     override suspend fun finishHandler(status: GameResult) {
-        // Handle finish event
+        val finalResult = if (status == GameResult.WIN && currentPlayer != SupabaseService.currentGame?.player1) {
+            GameResult.LOSE
+        } else if (status == GameResult.LOSE && currentPlayer == SupabaseService.currentGame?.player1) {
+            GameResult.WIN
+        } else {
+            status
+        }
+
         _isGameOver.value = true
-        _gameResult.value = status
+        _gameResult.value = finalResult
     }
+
 
 
     fun handleOpponentAttack(x: Int, y: Int) {
@@ -157,19 +164,6 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
         }
     }
 
-    fun allOpponentShipsSunk(): Boolean {
-        // Debugging: Log the state of each cell in _opponentShipCoordinates
-        _opponentShipCoordinates.forEach { coordinate ->
-            val cell = opponentBoard.getCell(coordinate)
-            println("Cell at $coordinate - Hit: ${cell.isHit()}, Occupied: ${cell.isOccupied()}")
-        }
-
-        // Logic to check if all opponent's ships are sunk
-        return _opponentShipCoordinates.all { coordinate ->
-            val cell = opponentBoard.getCell(coordinate)
-            cell.isHit() && cell.isOccupied() // Assuming a cell is marked hit and occupied if a ship is sunk
-        }
-    }
 
 
     fun allPlayerShipsSunk(): Boolean {
@@ -179,25 +173,30 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
 
     private fun checkWinCondition() {
         if(!_shipSetupViewModel.isSetupComplete) return
-        when {
-            // Assuming you have a method to check if all opponent's ships are sunk
-            allOpponentShipsSunk() -> gameFinish(GameResult.WIN)
-            // Assuming you have a method to check if all player's ships are sunk
-            allPlayerShipsSunk() -> gameFinish(GameResult.LOSE)
-            // Implement any draw condition if applicable
-            // ...
+        if (allPlayerShipsSunk()) {
+            gameFinish(GameResult.LOSE)
         }
     }
 
-    private fun gameFinish(result: GameResult ) {
-        _gameResult.value = result
+    private fun gameFinish(result: GameResult) {
+        val finalResult = if (result == GameResult.SURRENDER) {
+            if (currentPlayer == SupabaseService.currentGame?.player1) GameResult.LOSE else GameResult.WIN
+        } else {
+            result
+        }
+
+        _gameResult.value = finalResult
         _isGameOver.value = true
         viewModelScope.launch {
-            SupabaseService.gameFinish(result)
+            SupabaseService.gameFinish(finalResult)
         }
     }
 
+
+    var isPlayerSurrendered = false
+        private set
     fun playerSurrender() {
+        isPlayerSurrendered = true
         gameFinish(GameResult.SURRENDER)
     }
 

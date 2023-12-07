@@ -64,10 +64,7 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel(),navCont
     } // default selection
     val isRotated = remember { mutableStateOf(false) } // to handle ship rotation
 
-    /*LaunchedEffect(setupShipViewModel.isSetupComplete) {
-        if (setupShipViewModel.isSetupComplete) {
-        }
-    }*/
+
     Box(modifier = Modifier.fillMaxSize()){
         Image(painter = painterResource(id = R.drawable.my_setup),
             contentDescription = "BackgroundImage",

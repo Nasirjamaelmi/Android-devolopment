@@ -66,7 +66,7 @@ fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipV
     }
 
     if (isGameOver) {
-        GameResultScreen(gameResult, navController)
+        GameResultScreen(gameResult, navController, gameplayViewModel)
     } else {
         Column(
             modifier = Modifier
