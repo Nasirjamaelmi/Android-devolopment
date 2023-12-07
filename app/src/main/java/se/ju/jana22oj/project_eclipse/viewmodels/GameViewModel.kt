@@ -35,7 +35,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     SupabaseCallback {
     val _shipSetupViewModel = setupShipViewModel
     var playerBoard = Board() // For the player's board
-    val opponentBoard = Board()
+    var opponentBoard = Board()
     val _isMyTurn = MutableStateFlow(false)
     val _opponentShipCoordinates = mutableStateListOf<Coordinates>()
     val _isGameOver = MutableStateFlow(false)
@@ -69,7 +69,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     }
 
     override suspend fun actionHandler(x: Int, y: Int) {
-        handleOpponentAttack(x, y)
+        handleOpponentAttack(x,y)
 
     }
 
@@ -79,13 +79,13 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
             when (status) {
                 ActionResult.HIT -> {
                     cell.markHit()
-                    updateShipStatus(coords) // Check if the ship is sunk
+                    //updateShipStatus(coords) // Check if the ship is sunk
                 }
                 ActionResult.MISS -> cell.markMiss()
                 ActionResult.SUNK -> {
                     // Here, the ship is already confirmed to be sunk
                     cell.markHit() // The cell is still hit
-                    updateShipStatus(coords) // Update the status to sunk
+                    //updateShipStatus(coords) // Update the status to sunk
                 }
             }
             lastAttackCoordinates = null
@@ -104,12 +104,13 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
         if (!_isMyTurn.value) {
             val coordinate = Coordinates(x, y)
             val cell = playerBoard.getCell(coordinate)
-
             viewModelScope.launch {
+                println("Cell Occupied ${cell.isOccupied()}")
                 println(cell.isOccupied())
                 if (cell.isOccupied()) {
                     cell.markHit()
                     val isSunk = updateShipStatus(coordinate)
+                    println("Ship Sunk: $isSunk" )
                     if (isSunk) {
                         SupabaseService.sendAnswer(ActionResult.SUNK)
                     } else {
@@ -119,6 +120,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
                     cell.markMiss()
                     SupabaseService.sendAnswer(ActionResult.MISS)
                 }
+                checkWinCondition()
             }
         }
     }
@@ -149,7 +151,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
         }
     }
 
-    private fun allOpponentShipsSunk(): Boolean {
+    fun allOpponentShipsSunk(): Boolean {
         // Check if all opponent's ships are sunk
         return _opponentShipCoordinates.all { coordinate ->
             val cell = opponentBoard.getCell(coordinate)
@@ -157,12 +159,13 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
         }
     }
 
-    private fun allPlayerShipsSunk(): Boolean {
+     fun allPlayerShipsSunk(): Boolean {
         // Check if all player's ships are sunk
         return ships.all { ship -> ship.isSunk() }
     }
 
     private fun checkWinCondition() {
+        if(_shipSetupViewModel.isSetupComplete) return
         when {
             // Assuming you have a method to check if all opponent's ships are sunk
             allOpponentShipsSunk() -> gameFinish(GameResult.WIN)
