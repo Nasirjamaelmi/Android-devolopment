@@ -50,12 +50,12 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
         playerBoard = _shipSetupViewModel.board
         //_shipSetupViewModel.startGame()
         supabaseService.callbackHandler = this
-        if(currentPlayer == supabaseService.currentGame?.player1)
-        {
+        if (currentPlayer == supabaseService.currentGame?.player1) {
             _isMyTurn.value = true
         }
 
     }
+
     override suspend fun playerReadyHandler() {
         isOpponentReady.value = true
         if (_shipSetupViewModel.isSetupComplete) {
@@ -69,7 +69,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     }
 
     override suspend fun actionHandler(x: Int, y: Int) {
-        handleOpponentAttack(x,y)
+        handleOpponentAttack(x, y)
 
     }
 
@@ -77,20 +77,14 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
         lastAttackCoordinates?.let { coords ->
             val cell = opponentBoard.getCell(coords)
             when (status) {
-                ActionResult.HIT -> {
-                    cell.markHit()
-                    //updateShipStatus(coords) // Check if the ship is sunk
-                }
+                ActionResult.HIT -> cell.markHit(opponentBoard)
                 ActionResult.MISS -> cell.markMiss()
-                ActionResult.SUNK -> {
-                    // Here, the ship is already confirmed to be sunk
-                    cell.markHit() // The cell is still hit
-                    //updateShipStatus(coords) // Update the status to sunk
-                }
+                ActionResult.SUNK -> cell.markHit(opponentBoard)
             }
             lastAttackCoordinates = null
         }
         _isMyTurn.value = (status == ActionResult.HIT)
+        checkWinCondition()
     }
 
     override suspend fun finishHandler(status: GameResult) {
@@ -101,43 +95,37 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
 
 
     fun handleOpponentAttack(x: Int, y: Int) {
-        if (!_isMyTurn.value) {
-            val coordinate = Coordinates(x, y)
-            val cell = playerBoard.getCell(coordinate)
-            viewModelScope.launch {
-                println("Cell Occupied ${cell.isOccupied()}")
-                println(cell.isOccupied())
-                if (cell.isOccupied()) {
-                    cell.markHit()
-                    val isSunk = updateShipStatus(coordinate)
-                    println("Ship Sunk: $isSunk" )
-                    if (isSunk) {
-                        SupabaseService.sendAnswer(ActionResult.SUNK)
-                    } else {
-                        SupabaseService.sendAnswer(ActionResult.HIT)
-                    }
-                } else {
-                    cell.markMiss()
-                    SupabaseService.sendAnswer(ActionResult.MISS)
-                }
-                checkWinCondition()
+        val coordinate = Coordinates(x, y)
+        val cell = playerBoard.getCell(coordinate)
+        viewModelScope.launch {
+            if (cell.isOccupied()) {
+                cell.markHit(playerBoard) // This will also check and mark the cell as sunk if needed
+                SupabaseService.sendAnswer(if (cell.isSunk()) ActionResult.SUNK else ActionResult.HIT)
+            } else {
+                cell.markMiss()
+                SupabaseService.sendAnswer(ActionResult.MISS)
             }
+            checkWinCondition()
         }
     }
 
+/*
     fun updateShipStatus(hitCoordinate: Coordinates): Boolean {
-        // Logic to update ship status and check if a ship is sunk
+        // Find the ship that has been hit
         ships.find { ship -> hitCoordinate in ship.coordinates }?.let { hitShip ->
-            val isSunk = hitShip.coordinates.all { playerBoard.getCell(it).isHit() }
+            // Check if all parts (cells) of the ship are sunk
+            val isSunk = hitShip.coordinates.all { coord -> playerBoard.getCell(coord).isSunk() }
             if (isSunk) {
-                hitShip.markSunk()
+                // If all parts are sunk, mark the entire ship as sunk
+
                 return true
             }
         }
-         checkWinCondition()
-         return false
+        // No need to call checkWinCondition here as it's already being called after each attack
+        return false
     }
 
+*/
     fun attack(x: Int, y: Int) {
         if (_isMyTurn.value) {
             val coordinate = Coordinates(x, y)
@@ -155,26 +143,27 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
         // Check if all opponent's ships are sunk
         return _opponentShipCoordinates.all { coordinate ->
             val cell = opponentBoard.getCell(coordinate)
-            cell.isHit() && cell.isOccupied() // Assuming a cell is marked hit and occupied if a ship is sunk
+            cell.isSunk()
         }
     }
 
-     fun allPlayerShipsSunk(): Boolean {
-        // Check if all player's ships are sunk
-        return ships.all { ship -> ship.isSunk() }
+    private fun allPlayerShipsSunk(): Boolean {
+        return playerBoard.getAllCells().all { cell ->
+            !cell.isOccupied() || cell.isSunk()
+        }
     }
 
     private fun checkWinCondition() {
-        if(_shipSetupViewModel.isSetupComplete) return
-        when {
-            // Assuming you have a method to check if all opponent's ships are sunk
-            allOpponentShipsSunk() -> gameFinish(GameResult.WIN)
-            // Assuming you have a method to check if all player's ships are sunk
-            allPlayerShipsSunk() -> gameFinish(GameResult.LOSE)
-            // Implement any draw condition if applicable
-            // ...
+        if (_shipSetupViewModel.isSetupComplete) {
+            if (allOpponentShipsSunk()) {
+                gameFinish(GameResult.WIN)
+            } else if (allPlayerShipsSunk()) {
+                gameFinish(GameResult.LOSE)
+            }
         }
     }
+
+
 
     private fun gameFinish(result: GameResult ) {
         _gameResult.value = result
@@ -182,11 +171,13 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
         viewModelScope.launch {
             SupabaseService.gameFinish(result)
         }
-        // Additional logic like navigating to a result screen
     }
 
     fun playerSurrender() {
         gameFinish(GameResult.SURRENDER)
     }
+
+
+
 
 }
