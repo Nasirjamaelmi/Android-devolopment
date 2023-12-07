@@ -31,20 +31,20 @@ fun GameResultScreen(
             Text(
                 "Game Over",
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = Color.Red
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 "Result: ${gameResult?.name ?: "Unknown"}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White
+                color = Color.Red
             )
             Spacer(modifier = Modifier.height(32.dp))
             Button(
                 onClick = {navController.navigate(route = Screen.Lobby.route)},
                 colors = ButtonDefaults.buttonColors(Color.Blue)
             ) {
-                Text("Return to Lobby", color = Color.White)
+                Text("Return to Lobby", color = Color.Red)
             }
         }
     }
