@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="deploymentTargetDropDown">
-    <targetSelectedWithDropDown>
+    <runningDeviceTargetSelectedWithDropDown>
       <Target>
-        <type value="QUICK_BOOT_TARGET" />
+        <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\madza\.android\avd\Pixel_7_Pro_API_34.avd" />
+            <type value="SERIAL_NUMBER" />
+            <value value="R5CR516TM7V" />
           </Key>
         </deviceKey>
       </Target>
-    </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-12-07T19:06:28.754839600Z" />
-    <multipleDevicesSelectedInDropDown value="true" />
+    </runningDeviceTargetSelectedWithDropDown>
+    <timeTargetWasSelectedWithDropDown value="2023-12-08T15:08:54.545129100Z" />
     <runningDeviceTargetsSelectedWithDialog>
       <Target>
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\madza\.android\avd\Pixel_7_Pro_API_34.avd" />
+            <value value="C:\Users\madza\.android\avd\3.3_WQVGA_API_34.avd" />
           </Key>
         </deviceKey>
       </Target>
@@ -31,16 +30,7 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\madza\.android\avd\Pixel_XL_API_34.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\madza\.android\avd\Pixel_7_Pro_API_34.avd" />
+            <value value="C:\Users\madza\.android\avd\3.3_WQVGA_API_34.avd" />
           </Key>
         </deviceKey>
       </Target>

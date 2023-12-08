@@ -104,7 +104,6 @@ interface SupabaseCallback {
 }
 
 object SupabaseService {
-
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val _type: GameType = GameType.BATTLESHIPS
     private const val _supabaseUrl = "https://yrqrbupsuyfsyqlrfruw.supabase.co"
@@ -193,7 +192,11 @@ object SupabaseService {
         _lobbyJobs.forEach { it.cancel() }
         _lobbyJobs.clear()
         _lobby?.untrack()
+        _lobby?.leave()
         _lobby = null
+
+        users.clear()
+        games.clear()
     }
 
     private suspend fun joinGame(

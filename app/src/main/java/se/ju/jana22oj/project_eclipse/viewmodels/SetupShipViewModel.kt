@@ -12,7 +12,7 @@ import io.garrit.android.multiplayer.SupabaseService
 import kotlinx.coroutines.launch
 import se.ju.jana22oj.project_eclipse.viewmodels.Board.Companion.BoardSize
 
-
+//my friend helped me with the board and cell class
 class Ship(val type: ShipType, val coordinates: List<Coordinates>){
     var _isSunk = false
 

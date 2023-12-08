@@ -129,7 +129,7 @@ fun GameBoardView(
     }
 }
 
-
+// my friend help  me with the next 10 lines to put ship icons on the button
 @Composable
 fun GameCellView(
     cell: Cell,
@@ -151,7 +151,7 @@ fun GameCellView(
             .border(1.dp, Color.Black)
             .background(backgroundColor)
             .padding(4.dp),
-        enabled = isMyTurn && !cell.isHit() && !cell.isMiss(),
+        enabled = isMyTurn && cell.isAttackable(),
         contentPadding = PaddingValues(0.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -162,4 +162,6 @@ fun GameCellView(
     }
 }
 
-fun Cell.isAttackable() = !isHit() && !isMiss()
+fun Cell.isAttackable(): Boolean {
+    return !isHit() && !isMiss()
+}

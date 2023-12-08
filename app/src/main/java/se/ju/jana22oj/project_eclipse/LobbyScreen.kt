@@ -76,7 +76,8 @@ fun LobbyScreen(modifier: Modifier = Modifier, navController: NavController, lob
                         }
                     }
                 )
-            }
+            },
+            containerColor = Color.Transparent
         ) { innerPadding ->
             LazyColumn(
                 modifier = Modifier

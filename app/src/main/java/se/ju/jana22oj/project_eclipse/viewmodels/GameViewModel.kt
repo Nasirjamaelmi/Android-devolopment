@@ -14,6 +14,7 @@ import io.garrit.android.multiplayer.GameResult
 import io.garrit.android.multiplayer.Player
 import io.garrit.android.multiplayer.SupabaseCallback
 import io.garrit.android.multiplayer.SupabaseService
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -73,6 +74,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     }
 
     override suspend fun releaseTurnHandler() {
+        delay(1000)
         _isMyTurn.value = true
     }
 
@@ -82,18 +84,23 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     }
 
    //when the player receives the result of their attack
-    override suspend fun answerHandler(status: ActionResult) {
-        lastAttackCoordinates?.let { coords ->
-            val cell = opponentBoard.getCell(coords)
-            when (status) {
-                ActionResult.HIT -> cell.markHit()
-                ActionResult.MISS -> cell.markMiss()
-                ActionResult.SUNK -> cell.markHit()
-            }
-            lastAttackCoordinates = null
-        }
-        _isMyTurn.value = (status == ActionResult.HIT)
-    }
+   override suspend fun answerHandler(status: ActionResult) {
+       lastAttackCoordinates?.let { coords ->
+           val cell = opponentBoard.getCell(coords)
+           when (status) {
+               ActionResult.HIT, ActionResult.SUNK -> {
+                   cell.markHit()
+                   _isMyTurn.value = true // Player continues their turn
+               }
+               ActionResult.MISS -> {
+                   cell.markMiss()
+                   _isMyTurn.value = false // Turn ends, opponent's turn
+                   SupabaseService.releaseTurn()
+               }
+           }
+           lastAttackCoordinates = null
+       }
+   }
 
 
     override suspend fun finishHandler(status: GameResult) {
@@ -158,8 +165,6 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
 
             viewModelScope.launch {
                 SupabaseService.sendTurn(x, y)
-                _isMyTurn.value = false // Toggle turn
-                SupabaseService.releaseTurn()
             }
         }
     }
@@ -198,6 +203,13 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     fun playerSurrender() {
         isPlayerSurrendered = true
         gameFinish(GameResult.SURRENDER)
+    }
+
+    fun onLeavegame(){
+        viewModelScope.launch {
+            SupabaseService.leaveGame()
+            SupabaseService.joinLobby(SupabaseService.player!!)
+        }
     }
 
 }

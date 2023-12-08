@@ -1,4 +1,7 @@
 package se.ju.jana22oj.project_eclipse
+//https://chat.openai.com/share/2781d05c-5313-429b-93cb-c978f21c0e2c
+//https://chat.openai.com/share/76fd13c3-637d-4330-849d-1e7e20ad7a16
+//https://chat.openai.com/share/e586663c-34b5-4d53-b8d5-1b349dc4fe75
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
