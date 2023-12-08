@@ -81,14 +81,14 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
 
     }
 
-    // This method is called when the player receives the result of their attack
+   //when the player receives the result of their attack
     override suspend fun answerHandler(status: ActionResult) {
         lastAttackCoordinates?.let { coords ->
             val cell = opponentBoard.getCell(coords)
             when (status) {
                 ActionResult.HIT -> cell.markHit()
                 ActionResult.MISS -> cell.markMiss()
-                ActionResult.SUNK -> cell.markHit() // Mark the cell as hit; sunk status is visual only
+                ActionResult.SUNK -> cell.markHit()
             }
             lastAttackCoordinates = null
         }

@@ -56,12 +56,11 @@ import se.ju.jana22oj.project_eclipse.viewmodels.ShipType
 fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel(),navController: NavController) {
     val ships = setupShipViewModel.ships
     val availableShipTypes = setupShipViewModel.availabeshipTypes
-    //val selectedShipType = remember { mutableStateOf(ShipType.DESTROYER) } // default selection
     val selectedShipType: State<ShipType> = remember(availableShipTypes) {
         derivedStateOf {
             availableShipTypes.firstOrNull() ?: ShipType.CARRIER
         }
-    } // default selection
+    }
     val isRotated = remember { mutableStateOf(false) } // to handle ship rotation
 
 
@@ -132,7 +131,7 @@ fun SetupShipScreen(setupShipViewModel: SetupShipViewModel = viewModel(),navCont
 @Composable
 fun DropdownMenuWithIcons(selectedShipType: State<ShipType>, availableShipTypes: List<ShipType>) {
     var expanded by remember { mutableStateOf(false) }
-    val shipTypes = ShipType.values()
+
 
     Box {
         Row(modifier = Modifier
@@ -154,7 +153,6 @@ fun DropdownMenuWithIcons(selectedShipType: State<ShipType>, availableShipTypes:
                         Text(shipType.name)
                     }
                 }, onClick = {
-                    //selectedShipType.value = shipType
                     expanded = false
                 })
             }
@@ -187,7 +185,7 @@ fun CellView(coordinates: Coordinates, ships: List<Ship>, viewModel: SetupShipVi
         content = {
             Box(contentAlignment = Alignment.Center) {
                 shipInCell?.let {
-                    ShipIcon(it.type, Modifier.fillMaxSize()) // Fill the cell with the icon
+                    ShipIcon(it.type, Modifier.fillMaxSize())
                 }
             }
         }
@@ -215,11 +213,3 @@ fun ShipIcon(shipType: ShipType, modifier: Modifier = Modifier) {
             modifier = modifier
     )
 }
-
-/*
-@Preview(showBackground = true, widthDp = 320, heightDp = 320)
-@Composable
-fun DefaultPreview(){
-    SetupShipScreen()
-}
- */

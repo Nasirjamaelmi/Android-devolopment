@@ -124,7 +124,7 @@ fun GameItem(game: Game, lobbyViewModel: LobbyViewModel, navController: NavContr
             .padding(16.dp)
     ) {
         Text("${game.player1.name} has invited you")
-        Spacer(modifier = Modifier.height(16.dp)) // Add space between text and buttons
+        Spacer(modifier = Modifier.height(16.dp))
 
         Row(
             modifier = Modifier
@@ -145,7 +145,7 @@ fun GameItem(game: Game, lobbyViewModel: LobbyViewModel, navController: NavContr
                     fontWeight = FontWeight.Bold
                 )
             }
-            Spacer(modifier = Modifier.width(8.dp)) // Add space between buttons
+            Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
                     lobbyViewModel.declineInvite(game)

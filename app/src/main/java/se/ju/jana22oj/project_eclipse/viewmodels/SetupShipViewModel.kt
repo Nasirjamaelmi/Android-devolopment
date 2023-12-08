@@ -96,7 +96,7 @@ class Cell(val coordinates: Coordinates) {
         return _occupant != null
     }
 
-    // Call this method when a cell is hit by an attack
+    // when a cell is hit by an attack
     fun markHit() {
         _isHit = true
 
