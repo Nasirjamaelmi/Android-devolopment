@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +39,7 @@ import io.garrit.android.multiplayer.SupabaseService
 import se.ju.jana22oj.project_eclipse.R
 import se.ju.jana22oj.project_eclipse.viewmodels.Board
 import se.ju.jana22oj.project_eclipse.viewmodels.Cell
+import se.ju.jana22oj.project_eclipse.viewmodels.Coordinates
 import se.ju.jana22oj.project_eclipse.viewmodels.GameplayViewModel
 import se.ju.jana22oj.project_eclipse.viewmodels.GameplayViewModelFactory
 import se.ju.jana22oj.project_eclipse.viewmodels.SetupShipViewModel
@@ -57,6 +59,7 @@ fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipV
     val isGameOver by gameplayViewModel._isGameOver.collectAsState()
     val gameResult by gameplayViewModel._gameResult.collectAsState()
     val ships = gameplayViewModel.ships
+    val showShips = !isMyTurn
 
 
 
@@ -91,7 +94,7 @@ fun GameplayScreen( navController: NavController, setupShipViewModel: SetupShipV
             )
             Spacer(modifier = Modifier.height(16.dp))
             // Displaying the game board
-            GameBoardView(boardToDisplay, isMyTurn, ships, gameplayViewModel)
+            GameBoardView(boardToDisplay, isMyTurn, ships,showShips, gameplayViewModel)
             Spacer(modifier = Modifier.weight(1f)) // Pushes the button to the bottom
             Button(
                 onClick = { gameplayViewModel.playerSurrender() },
@@ -109,6 +112,7 @@ fun GameBoardView(
     board: Board,
     isMyTurn: Boolean,
     ships: List<Ship>,
+    showShips: Boolean,
     gameplayViewModel: GameplayViewModel
 ) {
     LazyVerticalGrid(
@@ -116,11 +120,12 @@ fun GameBoardView(
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        items(board.cells) { cell ->
-            val x = cell.coordinates.x
-            val y = cell.coordinates.y
+        items(Board.BoardSize * Board.BoardSize) { index ->
+            val x = index % Board.BoardSize
+            val y = index / Board.BoardSize
+            val cell = board.getCell(Coordinates(x, y))
 
-            GameCellView(cell, isMyTurn, ships) { 
+            GameCellView(cell, isMyTurn, ships, showShips) {
                 if (isMyTurn) {
                     gameplayViewModel.attack(x, y)
                 }
@@ -135,10 +140,12 @@ fun GameCellView(
     cell: Cell,
     isMyTurn: Boolean,
     ships: List<Ship>,
+    showShips: Boolean,
     onAttack: () -> Unit
 ) {
-    val shipInCell = ships.find { ship -> cell.coordinates in ship.coordinates }
+    val shipInCell = if (showShips) ships.find { ship -> cell.coordinates in ship.coordinates } else null
     val backgroundColor = when {
+        showShips && shipInCell?.isSunk() == true -> Color.Black
         cell.isHit() -> Color.Red
         cell.isMiss() -> Color.Blue
         else -> Color.LightGray
@@ -152,11 +159,13 @@ fun GameCellView(
             .background(backgroundColor)
             .padding(4.dp),
         enabled = isMyTurn && cell.isAttackable(),
+        colors = ButtonDefaults.buttonColors(containerColor = if (shipInCell != null  && !showShips) Color.Transparent else backgroundColor),
+        shape = RectangleShape,
         contentPadding = PaddingValues(0.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
-            shipInCell?.let {
-                ShipIcon(it.type, Modifier.fillMaxSize())
+            if (shipInCell != null) {
+                ShipIcon(shipInCell.type, Modifier.fillMaxSize())
             }
         }
     }
