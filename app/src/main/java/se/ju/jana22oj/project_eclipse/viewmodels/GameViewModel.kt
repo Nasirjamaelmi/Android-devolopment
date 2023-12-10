@@ -74,7 +74,7 @@ class GameplayViewModel(setupShipViewModel: SetupShipViewModel, supabaseService:
     }
 
     override suspend fun releaseTurnHandler() {
-        delay(1000)
+        delay(1500)
         _isMyTurn.value = true
     }
 

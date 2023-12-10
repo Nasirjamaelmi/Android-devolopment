@@ -1,5 +1,10 @@
 package se.ju.jana22oj.project_eclipse.screens
 
+import android.content.Context
+import android.media.MediaPlayer
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,22 +18,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -125,11 +133,15 @@ fun GameBoardView(
             val y = index / Board.BoardSize
             val cell = board.getCell(Coordinates(x, y))
 
-            GameCellView(cell, isMyTurn, ships, showShips) {
-                if (isMyTurn) {
+            GameCellView(
+                cell = board.getCell(Coordinates(x, y)),
+                isMyTurn = isMyTurn,
+                ships = ships,
+                showShips = showShips,
+                onAttack = { x, y ->
                     gameplayViewModel.attack(x, y)
                 }
-            }
+            )
         }
     }
 }
@@ -141,9 +153,14 @@ fun GameCellView(
     isMyTurn: Boolean,
     ships: List<Ship>,
     showShips: Boolean,
-    onAttack: () -> Unit
+    onAttack: (Int, Int) -> Unit
+
 ) {
-    val shipInCell = if (showShips) ships.find { ship -> cell.coordinates in ship.coordinates } else null
+    val context = LocalContext.current
+
+    val shipInCell =
+        if (showShips) ships.find { ship -> cell.coordinates in ship.coordinates } else null
+
     val backgroundColor = when {
         showShips && shipInCell?.isSunk() == true -> Color.Black
         cell.isHit() -> Color.Red
@@ -152,20 +169,39 @@ fun GameCellView(
     }
 
     Button(
-        onClick = { if (isMyTurn && cell.isAttackable()) onAttack() },
+        onClick = {
+            if (isMyTurn && cell.isAttackable()) {
+                onAttack(cell.coordinates.x, cell.coordinates.y)
+            }
+        },
         modifier = Modifier
             .aspectRatio(1f)
             .border(1.dp, Color.Black)
             .background(backgroundColor)
             .padding(4.dp),
         enabled = isMyTurn && cell.isAttackable(),
-        colors = ButtonDefaults.buttonColors(containerColor = if (shipInCell != null  && !showShips) Color.Transparent else backgroundColor),
+        colors = ButtonDefaults.buttonColors(containerColor = if (shipInCell != null && !showShips) Color.Transparent else backgroundColor),
         shape = RectangleShape,
         contentPadding = PaddingValues(0.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
             if (shipInCell != null) {
                 ShipIcon(shipInCell.type, Modifier.fillMaxSize())
+            }
+            when {
+                cell.isHit() -> {
+                    HitAnimation()
+                    LaunchedEffect(key1 = cell) {
+                        playSoundEffect(context, R.raw.hit_sound)
+                    }
+                }
+
+                cell.isMiss() -> {
+                    MissAnimation()
+                    LaunchedEffect(key1 = cell) {
+                        playSoundEffect(context, R.raw.miss_sound)
+                    }
+                }
             }
         }
     }
@@ -174,3 +210,46 @@ fun GameCellView(
 fun Cell.isAttackable(): Boolean {
     return !isHit() && !isMiss()
 }
+
+
+fun playSoundEffect(context: Context, soundId: Int) {
+    MediaPlayer.create(context, soundId).apply {
+        setOnCompletionListener { mp -> mp.release() }
+        start()
+    }
+}
+
+@Composable
+fun  HitAnimation() {
+
+    val scale by animateFloatAsState(
+        targetValue = 1.5f,
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+    )
+
+    Box(modifier = Modifier.scale(scale)) {
+
+        Image(
+            painter = painterResource(id = R.drawable.explosion_icon),
+            contentDescription = "Explosion",
+            modifier = Modifier.size(50.dp) // Adjust the size as needed
+        )
+    }
+}
+
+@Composable
+fun MissAnimation() {
+    val scale by animateFloatAsState(
+        targetValue = 1.5f,
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+    )
+
+    Box(modifier = Modifier.scale(scale)) {
+        Image(
+            painter = painterResource(id = R.drawable.splash_icon),
+            contentDescription = "Splash",
+            modifier = Modifier.size(50.dp)
+        )
+    }
+}
+
